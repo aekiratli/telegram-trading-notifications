@@ -1,6 +1,0 @@
-python-telegram-bot
-dotenv
-pandas
-python-binance
-TA-Lib
-plolty
