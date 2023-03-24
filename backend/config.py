@@ -1,17 +1,22 @@
-import os
 from dotenv import load_dotenv
+import os
 import logging
-
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO
-)
+import sys
 
 load_dotenv()
+SECRET_KEY = 'super secret key'
+TELEGRAM_SECRET = os.getenv("TELEGRAM_SECRET")
 
-TOKEN = os.getenv('TELEGRAM_TOKEN')
-PAIR= "APEUSDT"
-CANDLE_INTERVAL="1m"
-SINCE_WHEN="180 minutes ago UTC"
-MOVING_AVERAGE_ROLLING=9
-RSI_PERIOD=14
+def rsi_logging():
+
+    logger_db_client = logging.getLogger("tortoise.db_client")
+    logger_db_client.setLevel(logging.ERROR)
+
+    logger_tortoise = logging.getLogger("tortoise")
+    logger_tortoise.setLevel(logging.ERROR)
+
+    
+    logging.basicConfig(filename='jobs.log',
+                        level=logging.INFO, 
+                        format= '[%(asctime)s] - %(levelname)s - %(message)s',
+                        datefmt='%H:%M:%S')
