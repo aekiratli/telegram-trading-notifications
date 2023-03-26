@@ -11,17 +11,18 @@ async def register_user(request: Request) -> HTTPResponse:
     if is_register_succesful:
         return json({'message': 'Registered'})
     else:
-        return json({'message': 'User is registered'})
-    
+        return json({'message': 'User is registered'},headers={"contasdasdasdsaent-language": "en-US"})
+async def asd(request: Request) -> HTTPResponse:
+        return json({'message': 'User is registered'},headers={"contasdasdasdsaent-language": "en-US"})
 async def login(request: Request) -> HTTPResponse:
     try:
         token = await UserController.login(request.json)
     except FormDataMissing:
-        return json({'message': 'Form data is missing'})
+        return json({'message': 'Form data is missing'},200)
     except WrongPasswordOrUsername:
-        return json({'message': 'Wrong Username Or Password'})
+        return json({'message': 'Wrong Username Or Password'},200)
     except UserIsNotRegistered:
-        return json({'message': 'User Is Not Registered'})
+        return json({'message': 'User Is Not Registered'}, 200)
     return json({"token": token})
 
 async def who_am_i(request: Request) -> HTTPResponse:
@@ -31,3 +32,4 @@ users = Blueprint("users", url_prefix="/users")
 users.add_route(register_user, "register_user", methods=["POST", "OPTIONS"])
 users.add_route(login, "login", methods=["POST", "OPTIONS"])
 users.add_route(who_am_i, "who_am_i", methods=["POST", "OPTIONS"])
+users.add_route(asd, "asd", methods=["POST", "GET"])

@@ -14,7 +14,7 @@ async def deploy_jobs():
     seconds = now % 60
     time_to_wait = 60 - seconds
     logger.info("Waiting " + str(time_to_wait) + " seconds ...")
-    #await asyncio.sleep(time_to_wait)
+    await asyncio.sleep(time_to_wait)
     while True:
         logger.info("Running Jobs Every 60 seconds ...")
         jobs = await Job.filter().all()
