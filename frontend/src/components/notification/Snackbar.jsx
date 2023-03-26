@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import { Alert } from '@mui/material';
-import { AppContext } from '../../App';
+import { useAppContext } from '../../AppContext';
 
 
 export default function SnackbarController() {
-    const { snackbar, setSnackbar } = useContext(AppContext);
+    const { snackbar, setSnackbar } = useAppContext();
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {

@@ -4,44 +4,49 @@ import Protected from './ProtectedRoute';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import SnackbarController from './components/notification/Snackbar';
+import NavBar from './components/navbar/NavBar';
+import { Main } from './components/navbar/styles';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { useAppContext } from './AppContext';
 
-// Create a new context object
-export const AppContext = React.createContext();
 
 const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = React.useState(true);
-  const [snackbar, setSnackbar] = React.useState({open:false,message:''});
 
-  React.useEffect(() => {
-    console.log(isAuthenticated)
-  }, [isAuthenticated]);
-  // Define a global state object
-  const appState = {
-    isAuthenticated,
-    setIsAuthenticated,
-    snackbar,
-    setSnackbar,
-  };
+  const {isSidebarOpen} = useAppContext()
+
+  const THEME = createTheme({
+    typography: {
+     "fontFamily": `"Quicksand"`,
+     "fontSize": 14,
+     "fontWeightLight": 300,
+     "fontWeightRegular": 400,
+     "fontWeightMedium": 500
+    }
+ });
 
   return (
-    // Provide the app state to all child components
-    <AppContext.Provider value={appState}>
-      <SnackbarController/>
+
+    <ThemeProvider theme={THEME}>
+     <SnackbarController />
       <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/dashboard"
-            element={
-              <Protected>
-                <Dashboard />
-              </Protected>
-            }
-          />
-          <Route path="*" element={<div>404</div>}/>
-        </Routes>
+        <NavBar />
+        <Main open={isSidebarOpen}>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/dashboard"
+              element={
+                <Protected>
+                  <Dashboard />
+                </Protected>
+              }
+            />
+            <Route path="*" element={<div>404</div>} />
+          </Routes>
+        </Main>
       </BrowserRouter>
-    </AppContext.Provider>
+      </ThemeProvider>
+
   );
 };
 

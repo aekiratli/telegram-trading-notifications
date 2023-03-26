@@ -11,7 +11,8 @@ import { styled } from '@mui/system';
 import { API_URL } from '../api/urls';
 import apiFetch from '../api/fetcher';
 import { api } from '../api/fetcher';
-import { AppContext } from '../App';
+import { useAppContext } from '../AppContext';
+import { drawerWidth } from '../components/navbar/styles';
 
 const MyButton = styled(Button)({
   marginTop: '1rem',
@@ -20,7 +21,7 @@ const MyButton = styled(Button)({
 const Login = () => {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const {setIsAuthenticated, setSnackbar} = React.useContext(AppContext);
+  const {setIsAuthenticated, setSnackbar} = useAppContext();
 
   const handleLogin = () => {
     apiFetch(API_URL.login(), { username: username, password: password })
@@ -31,6 +32,8 @@ const Login = () => {
           api.defaults.headers = {
             Authorization: `Bearer ${response.token}`,
           };
+          // return <Navigate to="/dashboard" replace />
+          window.location.href="/dashboard";
         }
         if (response.message) {
           setSnackbar({open:true, message:response.message, type:'error'})
@@ -42,6 +45,7 @@ const Login = () => {
   };
 
   return (
+    <div style={{paddingRight:drawerWidth}}>
     <Container maxWidth="xs">
       <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <LockOutlinedIcon sx={{ mb: 1 }} />
@@ -77,6 +81,7 @@ const Login = () => {
         </Box>
       </Box>
     </Container>
+    </div>
   );
 };
 
