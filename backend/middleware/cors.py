@@ -4,6 +4,7 @@ from sanic import Request, HTTPResponse
 
 
 def _add_cors_headers(response: HTTPResponse, methods: Iterable[str]) -> None:
+
     allow_methods = list(set(methods))
     if "OPTIONS" not in allow_methods:
         allow_methods.append("OPTIONS")
@@ -19,6 +20,6 @@ def _add_cors_headers(response: HTTPResponse, methods: Iterable[str]) -> None:
 
 
 def add_cors_headers(request: Request, response: HTTPResponse) -> None:
-    # if request.method != "OPTIONS" and request.route:
-    methods = [method for method in request.route.methods]
-    _add_cors_headers(response, methods)
+    if request.method != "OPTIONS" and request.route:
+        methods = [method for method in request.route.methods]
+        _add_cors_headers(response, methods)

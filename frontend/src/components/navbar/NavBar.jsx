@@ -143,9 +143,7 @@ export default function PersistentDrawerLeft() {
           }
         </List>
       </Drawer>
-      <Main open={isSidebarOpen}>
-        <DrawerHeader />
-      </Main>
+      <DrawerHeader />
     </Box>
   );
 }

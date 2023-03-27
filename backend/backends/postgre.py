@@ -2,11 +2,11 @@ from tortoise.contrib.sanic import register_tortoise
 
 APPS_MODELS = [
     "components.user.models",
-    "components.counter.models",
+    "components.job.models",
     "aerich.models",
 ]
 
-URI = "postgres://postgres:1@192.168.1.82:5432/telegram"
+URI = "postgres://postgres:1@192.168.1.82:5432/postgres"
 TORTOISE_ORM = {
     "connections": {"default": URI},
     "apps": {

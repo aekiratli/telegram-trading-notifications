@@ -42,7 +42,7 @@ class UserController:
         if check_password_hash(user.password, password):
             token = jwt.encode({
                 'sub': user.username,
-                'exp' : datetime.utcnow() + timedelta(days = 1)
+                'exp' : datetime.utcnow() + timedelta(hours=30)
             }, SECRET_KEY)
             return token
         raise WrongPasswordOrUsername

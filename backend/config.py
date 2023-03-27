@@ -4,7 +4,7 @@ import logging
 import sys
 
 load_dotenv()
-SECRET_KEY = 'super secret key'
+SECRET_KEY = 'super_secret_key'
 TELEGRAM_SECRET = os.getenv("TELEGRAM_SECRET")
 
 def rsi_logging():

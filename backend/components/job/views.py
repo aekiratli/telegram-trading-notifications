@@ -1,15 +1,18 @@
-# from sanic import Blueprint, Request, HTTPResponse
-# from sanic.response import json
-# from components.counter.repository import CounterController
-# from tortoise.exceptions import DoesNotExist
+from sanic import Blueprint, Request, HTTPResponse
+from sanic.response import json
+from components.job.repository import JobController
 
-# async def get_counter(request: Request, user_id: int) -> HTTPResponse:
-#     try:
-#         count = await CounterController.get_counter(user_id)
-#     except DoesNotExist:
-#         return json({"msg": "User Does not Exist"})
+async def get_jobs(request: Request) -> HTTPResponse:
+    jobs = await JobController.get_jobs()
+    return json(jobs)
 
-#     return json({"msg": count.how_many_logged_in})
+async def add_job(request: Request) -> HTTPResponse:
+    try:
+        await JobController.create_job(request.json)
+    except:
+        return json({"msg": "failed"},503)
+    return json({"msg": "success"})
 
-# counter = Blueprint("counter", url_prefix="/counter")
-# counter.add_route(get_counter, "/<user_id:int>/get_counter", methods=["POST", "OPTIONS"])
+job = Blueprint("job", url_prefix="/jobs")
+job.add_route(get_jobs, "/list", methods=["POST"])
+job.add_route(add_job, "/add", methods=["POST"])

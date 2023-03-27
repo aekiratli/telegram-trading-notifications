@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-axios.defaults.withCredentials = true;
-
 export const api = axios.create({
   baseURL:'http://localhost:5007/api/v1',
   headers: {
@@ -10,7 +8,11 @@ export const api = axios.create({
   withCredentials: false,
 });
 
-const apiFetch = (url, data, config) => {
+const apiFetch = (url, data, config={}) => {
+  const accessToken = localStorage.getItem('token');
+  if (accessToken) {
+    config.headers = { Authorization: `Bearer ${accessToken}` };
+  }
   return api.post(url, data, config).then(res => res.data);
 };
 

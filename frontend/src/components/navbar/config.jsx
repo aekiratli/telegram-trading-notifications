@@ -2,7 +2,7 @@ export const SIDEBAR_ITEMS = [
     {
         display_name: 'Jobs',
         icon: 'AddAlarmIcon',
-        navigate_to: '/dashboard'
+        navigate_to: '/jobs'
     },
     {
         display_name: 'Trades',

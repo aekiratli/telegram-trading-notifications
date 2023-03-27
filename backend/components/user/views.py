@@ -11,9 +11,8 @@ async def register_user(request: Request) -> HTTPResponse:
     if is_register_succesful:
         return json({'message': 'Registered'})
     else:
-        return json({'message': 'User is registered'},headers={"contasdasdasdsaent-language": "en-US"})
-async def asd(request: Request) -> HTTPResponse:
-        return json({'message': 'User is registered'},headers={"contasdasdasdsaent-language": "en-US"})
+        return json({'message': 'User is registered'})
+
 async def login(request: Request) -> HTTPResponse:
     try:
         token = await UserController.login(request.json)
@@ -29,7 +28,5 @@ async def who_am_i(request: Request) -> HTTPResponse:
    return json({"msg": request.ctx.user.username})
 
 users = Blueprint("users", url_prefix="/users")
-users.add_route(register_user, "register_user", methods=["POST", "OPTIONS"])
-users.add_route(login, "login", methods=["POST", "OPTIONS"])
-users.add_route(who_am_i, "who_am_i", methods=["POST", "OPTIONS"])
-users.add_route(asd, "asd", methods=["POST", "GET"])
+users.add_route(register_user, "register_user", methods=["POST"])
+users.add_route(login, "login", methods=["POST"])

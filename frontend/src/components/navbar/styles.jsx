@@ -7,8 +7,10 @@ export const drawerWidth = 240;
 export const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
     flexGrow: 1,
+    marginTop: "25px",
     padding: theme.spacing(0),
     paddingLeft: "10px",
+    paddingRight: "10px",
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,

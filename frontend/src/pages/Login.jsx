@@ -29,11 +29,7 @@ const Login = () => {
         if (response.token){
           setIsAuthenticated(true)
           localStorage.setItem('token', response.token);
-          api.defaults.headers = {
-            Authorization: `Bearer ${response.token}`,
-          };
-          // return <Navigate to="/dashboard" replace />
-          window.location.href="/dashboard";
+          window.location.href="/jobs";
         }
         if (response.message) {
           setSnackbar({open:true, message:response.message, type:'error'})
