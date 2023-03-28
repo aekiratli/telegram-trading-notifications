@@ -10,3 +10,19 @@ export const useFetchJobs = (options) => {
     );
   };
   
+  export const useFetchCoins = (options) => {
+    return useProxyQuery(
+      "list_coins",
+      () => apiFetch(API_URL.listCoins()),
+      options
+    );
+  };
+  
+  export const useFetchSymbols = (options) => {
+    return useProxyQuery(
+      "list_symbol",
+      () => apiFetch(API_URL.listSymbol()),
+      options
+    );
+  };
+  

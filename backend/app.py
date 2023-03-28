@@ -5,6 +5,7 @@ from backends.mysql import APPS_MODELS, connect_database
 from tortoise import Tortoise
 from components.user.views import users
 from components.job.views import job
+from components.utils.views import utils
 from sanic import Blueprint
 from middleware.auth import authentication
 from middleware.cors import add_cors_headers
@@ -18,6 +19,7 @@ def create_app() -> Sanic:
     connect_database(app)
     group = Blueprint.group(
         users,
+        utils,
         job,
         version_prefix="/api/v",
         version=1,

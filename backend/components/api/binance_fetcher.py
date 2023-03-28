@@ -1,6 +1,8 @@
 import pandas as pd
 from config import *
 from binance import Client
+from typing import  List, Dict
+import asyncio
 
 class BinanceApiController:
     def __init__(self):
@@ -25,4 +27,8 @@ class BinanceApiController:
         if ma > 0:
             df['ma'] = df.close.rolling(ma).mean()
         return df
+    
+    async def get_coins(self) ->  List[Dict[str, str]]:
+        coins = self.client.get_all_tickers()
+        return coins
 
