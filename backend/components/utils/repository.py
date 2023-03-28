@@ -1,5 +1,7 @@
 from components.utils.models import Symbol
 from typing import List
+from tortoise import Tortoise
+from tortoise.transactions import atomic
 
 class UtilsController:
 
@@ -10,8 +12,26 @@ class UtilsController:
         return jobs
     
     @classmethod
-    async def create_symbol(self, payload: dict) -> None:
-        await Symbol.create(**payload)
+    @atomic()
+    async def create_symbols(self, symbols: List[dict]) -> None:
+        
+        existing_symbols = await self.get_symbols()
+        existing_symbols = [item['name'] for item in existing_symbols]
+
+        if len(symbols) == 0:
+            conn = Tortoise.get_connection("default")
+            await conn.execute_query(f'TRUNCATE TABLE symbol')
+            return
+
+        for symbol in symbols:
+            if symbol in existing_symbols:
+                pass
+            else:
+                await Symbol.create(**{"name": symbol})
+
+        for existing_symbol in existing_symbols:
+            if existing_symbol not in symbols:
+                await Symbol.filter(name=existing_symbol).delete()
 
     @classmethod
     async def get_symbols(self) -> list:

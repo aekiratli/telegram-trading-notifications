@@ -26,3 +26,11 @@ export const useFetchJobs = (options) => {
     );
   };
   
+  export const useFetchJobTypes = (options) => {
+    return useProxyQuery(
+      "list_job_type",
+      () => apiFetch(API_URL.listJobTypes()),
+      options
+    );
+  };
+  

@@ -7,11 +7,9 @@ async def get_coins(request: Request) -> HTTPResponse:
     coins = await BinanceApiController().get_coins()
     return json(coins)
 
-async def add_symbol(request: Request) -> HTTPResponse:
-    try:
-        await UtilsController.create_symbol(request.json)
-    except:
-        return json({"msg": "failed"},503)
+async def add_symbols(request: Request) -> HTTPResponse:
+    await UtilsController().create_symbols(request.json)
+
     return json({"msg": "success"})
 
 async def get_symbols(request: Request) -> HTTPResponse:
@@ -21,4 +19,4 @@ async def get_symbols(request: Request) -> HTTPResponse:
 utils = Blueprint("utils", url_prefix="/utils")
 utils.add_route(get_coins, "/list/coins", methods=["POST"])
 utils.add_route(get_symbols, "/list/symbol", methods=["POST"])
-utils.add_route(add_symbol, "/add/symbol", methods=["POST"])
+utils.add_route(add_symbols, "/add/symbols", methods=["POST"])

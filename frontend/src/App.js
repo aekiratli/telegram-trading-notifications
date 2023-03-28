@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, } from 'react-router-dom'
 import Protected from './ProtectedRoute';
 import Login from './pages/Login';
 import Jobs from './pages/Jobs';
+import Settings from './pages/Settings';
 import SnackbarController from './components/notification/Snackbar';
 import NavBar from './components/navbar/NavBar';
 import { Main } from './components/navbar/styles';
@@ -19,12 +20,12 @@ const App = () => {
   const { isSidebarOpen } = useAppContext()
 
   const THEME = createTheme({
-    typography: {
-      "fontFamily": `"Quicksand"`,
-      "fontSize": 14,
-      "fontWeight": "bold",
+    // typography: {
+    //   "fontFamily": `"Quicksand"`,
+    //   "fontSize": 14,
+    //   "fontWeight": "bold",
 
-    }
+    // }
   });
 
   return (
@@ -39,8 +40,16 @@ const App = () => {
               <Route
                 path="/jobs"
                 element={
-                  <Protected>
+                  <Protected somevar={"Hello!"}>
                     <Jobs />
+                  </Protected>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <Protected>
+                    <Settings />
                   </Protected>
                 }
               />

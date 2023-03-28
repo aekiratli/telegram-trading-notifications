@@ -2,59 +2,78 @@ import { useState, useEffect } from "react";
 import {
   Box,
   Button,
-  Checkbox,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  FormHelperText,
-  FormLabel,
-  InputLabel,
-  MenuItem,
-  Slider,
-  TextField,
   Typography,
 } from "@mui/material";
 import Select from 'react-select';
 import { useFetchCoins, useFetchSymbols } from "../api/queries";
-import Loader from "../components/loader";
+import { API_URL } from "../api/urls";
+import apiFetch from "../api/fetcher";
+import { useAppContext } from "../AppContext";
 
 const Settings = () => {
-  const { data: coinData, isLoading: isCoinDataLoading } = useFetchCoins({
-    cacheTime: 300000,
-  })
-  const { data: symbolData, isLoading: isSymbolDataLoading } = useFetchSymbols({
-    cacheTime: 300000,
-  })
+  const {setSnackbar} = useAppContext()
+  const { data: coinData, isLoading: isCoinDataLoading } = useFetchCoins()
+  const { data: symbolData, isLoading: isSymbolDataLoading } = useFetchSymbols()
+  const [selectOptions, setSelectOptions] = useState([]);
+  const [alreadySelected, setAlreadySelected] = useState([]);
+  const [initialAlreadySelected, setInitialAlreadySelected] = useState([]);
+  const [isSaveDisabled, setIsSaveDisabled] = useState(true);
 
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Handle form submission here
+  const handleOnSave = (event) => {
+    console.log(event)
+    apiFetch(API_URL.addSymbols(), [...alreadySelected].map((item) => item.label))
+    .then(response => {
+      console.log(response)
+      setSnackbar({ open: true, message: "Symbols Updated", type: 'success' })
+      setInitialAlreadySelected([...alreadySelected])
+    })
+    .catch(error => {
+      setSnackbar({ open: true, message: "Something went wrong", type: 'error' })
+    });
   };
+
   const handleOnChange = (e) => {
-  } 
+    setAlreadySelected(e)
+  }
+
+  useEffect(() => {
+    if (!isCoinDataLoading && !isSymbolDataLoading) {
+      const coinDataCopy = [...coinData]
+      const symbolDataCopy = [...symbolData]
+      const defVal = coinDataCopy?.filter((item) => symbolDataCopy?.map((i) => i?.name).includes(item?.symbol)).map((item) => ({ label: item?.symbol, value: item?.symbol }))
+      const options = coinDataCopy?.map(coin => { return ({ value: coin?.symbol, label: coin?.symbol }) })
+      setAlreadySelected(defVal)
+      setInitialAlreadySelected(defVal)
+      setSelectOptions(options)
+    }
+  }, [coinData, symbolData]);
+
+  useEffect(() => {
+    if (JSON.stringify(alreadySelected) === JSON.stringify(initialAlreadySelected))
+      setIsSaveDisabled(true)
+    else
+      setIsSaveDisabled(false)
+  }, [alreadySelected, initialAlreadySelected]);
 
   return (
     <Box sx={{ maxWidth: 600, mx: "auto", p: 3 }}>
       <Typography variant="h4" gutterBottom>
         Settings
       </Typography>
-      <form onSubmit={handleSubmit}>
         <Typography variant="h5" gutterBottom>
           Symbols
         </Typography>
         <Select
-          defaultValue={coinData?.filter((item) => symbolData?.map((i) => i?.name).includes(item?.symbol)).map((item) => ({ label: item?.symbol, value: item?.symbol }))}
           isMulti
+          value={alreadySelected}
           onChange={handleOnChange}
           isLoading={isCoinDataLoading || isSymbolDataLoading}
           name="colors"
-          options={coinData?.map(coin => { return ({ value: coin?.symbol, label: coin?.symbol }) })}
+          options={selectOptions}
         />
-        <Button style={{ marginTop: "15px" }} type="submit" variant="contained">
+        <Button onClick={handleOnSave} disabled={isSaveDisabled} style={{ marginTop: "15px" }} type="submit" variant="contained">
           Save
         </Button>
-      </form>
     </Box>
   );
 };
