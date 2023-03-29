@@ -2,16 +2,23 @@ import * as React from 'react';
 import { InputLabel, MenuItem, Select, FormControl, TextField } from '@mui/material';
 import { INTERVALS } from '../../utils/binance';
 import { useJobContext } from './JobContext';
-import apiFetch from '../../api/fetcher';
-import { API_URL } from '../../api/urls';
 
 export default function RSIAddContent() {
-  const { symbolData, jobType } = useJobContext()
-  const [interval, setInterval] = React.useState();
-  const [symbol, setSymbol] = React.useState();
-  const [candles, setCandles] = React.useState();
 
-  const [name, setName] = React.useState('');
+  const {
+    symbolData,
+    jobType,
+    interval,
+    setInterval,
+    symbol,
+    setSymbol,
+    candles,
+    setCandles,
+    name,
+    setName,
+    value,
+    setValue,
+  } = useJobContext()
 
   const handleInterval = (e) => {
     setInterval(e.target.value)
@@ -23,6 +30,11 @@ export default function RSIAddContent() {
 
   const handleName = (e) => {
     setName(e.target.value)
+  };
+
+  const handleValue = (e) => {
+    if (/^\d*$/.test(e.target.value))
+      setValue(e.target.value)
   };
 
   const handleCandles = (e) => {
@@ -37,6 +49,15 @@ export default function RSIAddContent() {
       setName(suggestedName)
     }
   }, [symbol, interval]);
+
+  React.useEffect(() => {
+    if (interval) {
+      const minutes = INTERVALS.find(interal_ => interal_.value === interval).minutes
+      const suggestedCandles = 720 / minutes
+      if (suggestedCandles > 1)
+        setCandles(suggestedCandles)
+    }
+  }, [interval]);
 
   return (
     <>
@@ -59,17 +80,19 @@ export default function RSIAddContent() {
       <TextField
         required
         value={candles}
-        autoFocus
         onChange={handleCandles}
         margin="dense"
         id="candles"
         label="How Many Candles Needed"
         type="text"
         fullWidth
+        hiddenLabel
       />
       <TextField
         required
         autoFocus
+        value={value}
+        onChange={handleValue}
         margin="dense"
         id="value"
         label="RSI Threshold"
@@ -82,7 +105,6 @@ export default function RSIAddContent() {
         autoFocus
         onChange={handleName}
         margin="dense"
-        id="name"
         label="Name"
         type="text"
         fullWidth

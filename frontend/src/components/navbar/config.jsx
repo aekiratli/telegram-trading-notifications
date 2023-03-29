@@ -10,6 +10,11 @@ export const SIDEBAR_ITEMS = [
         navigate_to: '/trades'
     },
     {
+        display_name: 'Logs',
+        icon: 'TopicIcon',
+        navigate_to: '/logs'
+    },
+    {
         display_name: 'Settings',
         icon: 'MiscellaneousServicesIcon',
         navigate_to: '/settings'
