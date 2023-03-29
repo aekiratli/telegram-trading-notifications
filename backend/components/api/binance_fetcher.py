@@ -24,8 +24,10 @@ class BinanceApiController:
             # Add the kline data to the DataFrame
             df = df.append(pd.Series(kline_data, index=columns), ignore_index=True)
 
-        if ma > 0:
-            df['ma'] = df.close.rolling(ma).mean()
+        # if not ma:
+        #     return df
+        # if ma > 0:
+        #     df['ma'] = df.close.rolling(ma).mean()
         return df
     
     async def get_coins(self) ->  List[Dict[str, str]]:

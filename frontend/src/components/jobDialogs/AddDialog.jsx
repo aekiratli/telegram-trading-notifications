@@ -53,14 +53,16 @@ export default function AddDialog({ open, setOpen }) {
         pair: symbol,
         candle_interval: interval,
         since_when: sinceWhen,
-        rsi_value: value,
+        rsi_value: parseInt(value),
+        how_many_candles_left_to_reset: 0,
         last_run: 0,
+        candles_to_reset: 5,
       }
     }
     setIsLoading(true)
     apiFetch(API_URL.addJob(),payload)
     .then(response => {
-      //setOpen(false)
+      setOpen(false)
       queryClient.invalidateQueries({ queryKey: ['list_jobs'] })
       setSnackbar({ open: true, message: "Job is Added", type: 'success' })
     })

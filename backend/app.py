@@ -5,6 +5,7 @@ from backends.postgre import APPS_MODELS, connect_database
 from tortoise import Tortoise
 from components.user.views import users
 from components.job.views import job, job_type
+from components.logs.views import ws
 from components.utils.views import utils
 from sanic import Blueprint
 from middleware.auth import authentication
@@ -22,6 +23,7 @@ def create_app() -> Sanic:
         utils,
         job_type,
         job,
+        ws,
         version_prefix="/api/v",
         version=1,
     )

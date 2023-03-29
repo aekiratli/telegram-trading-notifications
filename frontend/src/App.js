@@ -1,8 +1,9 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Protected from './ProtectedRoute';
 import Login from './pages/Login';
 import Jobs from './pages/Jobs';
+import Logs from './pages/Logs';
 import Settings from './pages/Settings';
 import SnackbarController from './components/notification/Snackbar';
 import NavBar from './components/navbar/NavBar';
@@ -40,8 +41,16 @@ const App = () => {
               <Route
                 path="/jobs"
                 element={
-                  <Protected somevar={"Hello!"}>
+                  <Protected>
                     <Jobs />
+                  </Protected>
+                }
+              />
+              <Route
+                path="/logs"
+                element={
+                  <Protected >
+                    <Logs />
                   </Protected>
                 }
               />
@@ -52,6 +61,10 @@ const App = () => {
                     <Settings />
                   </Protected>
                 }
+              />
+              <Route
+                path="/"
+                element={<Navigate to="/jobs" />}
               />
               <Route path="*" element={<div>404</div>} />
             </Routes>

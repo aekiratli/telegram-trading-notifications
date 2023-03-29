@@ -8,7 +8,8 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 now = int(datetime.now().timestamp())
-URI = "mysql://root:test_root_password@localhost:3306/telegram"
+#URI = "mysql://root:test_root_password@localhost:3306/telegram"
+URI = "postgres://postgres:1@192.168.1.82:5432/postgres"
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--id', type=str, help='ID of the Job')
@@ -25,7 +26,6 @@ from components.indicators.rsi import calculate_rsi
 from components.api.telegram_api import TelegramApiController
 from config import rsi_logging
 # Init Logging
-rsi_logging()
 
 async def main():
     # Connect to the database
@@ -34,6 +34,7 @@ async def main():
         modules={'models': ['components.job.models']}
     )
     job = await Job.get(id=id)
+    rsi_logging(job.name)
     config = argparse.Namespace(**job.config)
     seconds = getattr(KlineIntervalSeconds, config.candle_interval).value
     # Add some attrs first time
@@ -48,7 +49,7 @@ async def main():
             df = BinanceApiController().get_klines(pair=config.pair,
                                                 candle_interval=getattr(KlineInterval, config.candle_interval).value,
                                                 since_when=config.since_when,
-                                                ma=config.moving_average)
+                                                )
             
             #TelegramApiController('1041353666').send_rsi_plot(df)
             # Get RSI
