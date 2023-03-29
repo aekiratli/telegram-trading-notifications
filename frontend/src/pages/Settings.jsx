@@ -70,10 +70,18 @@ const Settings = () => {
           isLoading={isCoinDataLoading || isSymbolDataLoading}
           name="colors"
           options={selectOptions}
+          theme={(theme) => ({
+            ...theme,
+            colors: {
+            ...theme.colors,
+              primary25: '#607d8b',              
+            },
+          })}
           styles={{
+            
             control: (baseStyles, state) => ({
               ...baseStyles,
-              backgroundColor: '#0c4069',
+              backgroundColor: '#37474f',
               color: 'black'
             }),
             menu: base => ({
@@ -81,7 +89,7 @@ const Settings = () => {
               // override border radius to match the box
               borderRadius: 0,
               // kill the gap
-              backgroundColor: '#0c4069',
+              backgroundColor: '#37474f',
               marginTop: 0
             }),
           }}

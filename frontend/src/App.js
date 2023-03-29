@@ -4,6 +4,7 @@ import Protected from './ProtectedRoute';
 import Login from './pages/Login';
 import Jobs from './pages/Jobs';
 import Logs from './pages/Logs';
+import NotFoundPage from './pages/NotFound';
 import Settings from './pages/Settings';
 import SnackbarController from './components/notification/Snackbar';
 import NavBar from './components/navbar/NavBar';
@@ -14,6 +15,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from 'react-query'
+
 const queryClient = new QueryClient()
 
 const App = () => {
@@ -90,7 +92,7 @@ const THEME = createTheme({
                 path="/"
                 element={<Navigate to="/jobs" />}
               />
-              <Route path="*" element={<div>404</div>} />
+              <Route path="*" element={<NotFoundPage/>} />
             </Routes>
           </Main>
         </BrowserRouter>

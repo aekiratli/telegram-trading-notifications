@@ -16,9 +16,9 @@ const JobButton = styled(Button)({
   textTransform: 'none',
   width: '100%',
   color: '#fff',
-  backgroundColor: '#212121',
+  backgroundColor: '#37474f',
   '&:hover': {
-    backgroundColor: '#424242',
+    backgroundColor: '#263238',
   },
   '&:active': {
     backgroundColor: '#616161',
