@@ -26,7 +26,7 @@ import ConfigDialog from '../components/jobDialogs/ConfigDialog';
 import { convertTimestampToDate } from '../utils/dates';
 
 const Job = () => {
-  const { data, isLoading } = useFetchJobs()
+  const { data, isLoading, isError } = useFetchJobs()
   const { data: jobData, isLoading: isJobDataLoading } = useFetchJobTypes()
   const { data: symbolData } = useFetchSymbols()
 
@@ -98,7 +98,7 @@ const Job = () => {
     job,
   }
 
-  if (isLoading)
+  if (isLoading ||isError)
     return (<SkeletonJobs />)
   return (
     <JobContext.Provider value={values}>

@@ -70,6 +70,21 @@ const Settings = () => {
           isLoading={isCoinDataLoading || isSymbolDataLoading}
           name="colors"
           options={selectOptions}
+          styles={{
+            control: (baseStyles, state) => ({
+              ...baseStyles,
+              backgroundColor: '#0c4069',
+              color: 'black'
+            }),
+            menu: base => ({
+              ...base,
+              // override border radius to match the box
+              borderRadius: 0,
+              // kill the gap
+              backgroundColor: '#0c4069',
+              marginTop: 0
+            }),
+          }}
         />
         <Button onClick={handleOnSave} disabled={isSaveDisabled} style={{ marginTop: "15px" }} type="submit" variant="contained">
           Save

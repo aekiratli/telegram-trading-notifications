@@ -5,14 +5,28 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useFetchJobs } from '../api/queries';
 import SkeletonLogs from '../components/skeleton/LogsGrid';
 import LogDialog from '../components/logDialogs';
+import FilterInput from '../components/filter';
 
 const Root = styled('div')({
   padding: '16px',
 });
 
+
 const JobButton = styled(Button)({
   textTransform: 'none',
   width: '100%',
+  color: '#fff',
+  backgroundColor: '#212121',
+  '&:hover': {
+    backgroundColor: '#424242',
+  },
+  '&:active': {
+    backgroundColor: '#616161',
+  },
+  '&:disabled': {
+    color: '#9e9e9e',
+    backgroundColor: '#424242',
+  },
 });
 
 const FilterWrapper = styled('div')({
@@ -22,9 +36,10 @@ const FilterWrapper = styled('div')({
   marginBottom: '16px',
 });
 
-const FilterInput = styled(InputBase)({
-  marginRight: '16px',
-});
+// const FilterInput = styled(InputBase)({
+//   marginRight: '16px',
+//   borderColor: 'white',
+// });
 
 const Logs = () => {
 
@@ -45,7 +60,6 @@ const Logs = () => {
     <Root>
       <FilterWrapper>
         <FilterInput placeholder="Filter jobs" />
-        <SearchIcon />
       </FilterWrapper>
       <Grid container spacing={2}>
         {jobsData.map((job) => (

@@ -23,6 +23,7 @@ import { useAppContext } from '../../AppContext';
 import { SIDEBAR_ITEMS } from './config';
 import { loadIcon } from '../icons';
 import { Main, AppBar, drawerWidth, DrawerHeader, StyledLink } from './styles';
+import TelegramIcon from '@mui/icons-material/Telegram';
 
 export default function PersistentDrawerLeft() {
   const { setIsSidebarOpen, isSidebarOpen, userName } = useAppContext();
@@ -119,6 +120,8 @@ export default function PersistentDrawerLeft() {
         open={isSidebarOpen}
       >
         <DrawerHeader>
+          <TelegramIcon />
+          Trading Notifications
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
