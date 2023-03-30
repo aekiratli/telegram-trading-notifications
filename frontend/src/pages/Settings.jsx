@@ -41,7 +41,6 @@ const Settings = () => {
   const [isSaveDisabled, setIsSaveDisabled] = useState(true);
 
   const handleOnSave = (event) => {
-    console.log(event)
     apiFetch(API_URL.addSymbols(), [...alreadySelected].map((item) => item.label))
       .then(response => {
         setSnackbar({ open: true, message: "Symbols Updated", type: 'success' })

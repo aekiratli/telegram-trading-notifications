@@ -1,46 +1,40 @@
-
-import requests
+import aiohttp
+import asyncio
+from typing import List
 from config import TELEGRAM_SECRET
-import matplotlib.pyplot as plt
-import io
+from config import job_logger
+import traceback
+import logging
 
 class TelegramApiController:
-    def __init__(self, chat_id: str):
-        self.token =TELEGRAM_SECRET
-        self.chat_id = chat_id
+    def __init__(self, chat_ids: List[str], job_name: str):
+        self.token = TELEGRAM_SECRET
+        self.chat_ids = chat_ids
+        self.job_name = job_name
 
-    def send_message(self, message: str):
-        url = f'https://api.telegram.org/bot{TELEGRAM_SECRET}/sendMessage'
-        data = {'chat_id': self.chat_id, 'text': message}
-        response = requests.post(url, json=data)
-        if response.status_code != 200:
-            raise ValueError('Failed to send notification')
+    async def send_message(self, message: str):
+        job_logger(self.job_name)
+        try:
+            url = f'https://api.telegram.org/bot{TELEGRAM_SECRET}/sendMessage'
+            async with aiohttp.ClientSession() as session:
+                tasks = []
+                for chat_id in self.chat_ids:
+                    tasks.append(post(session=session, url=url, chat_id=chat_id, message=message))
+                await asyncio.gather(*tasks, return_exceptions=True)
+                
+        except Exception:
+             logging.error(f"ERR on Telegram API {traceback.format_exc()}")
 
-    def send_telegram_photo(self, image_buffer, caption=None):
-        url = f"https://api.telegram.org/bot{TELEGRAM_SECRET}/sendPhoto"
-        files = {"photo": ("image.jpg", image_buffer, "image/jpeg")}
-        data = {"chat_id": self.chat_id}
-        if caption is not None:
-            data["caption"] = caption
-        response = requests.post(url, files=files, data=data)
-        if response.status_code != 200:
-            raise Exception(f"Failed to send photo: {response.content}")
-        
-    def send_rsi_plot(self, df):
 
-        fig, ax = plt.subplots()
-        ax.plot(df['close'])
-        ax.set_title('Closing Prices')
-        ax.set_xlabel('Time')
-        ax.set_ylabel('Price')
-
-        # Save plot to a buffer
-        buf = io.BytesIO()
-        plt.savefig(buf, format='png')
-
-        # Send plot image in a Telegram message
-        buf.seek(0)
-        self.send_telegram_photo(buf, 'Closing Prices')
-
-        # Close plot
-        plt.close()
+async def post(
+    session: aiohttp.ClientSession,
+    url: str,
+    chat_id: str,
+    message: str,
+    **kwargs
+) -> dict:
+    resp = await session.request('POST', json={'text': message, 'chat_id': chat_id}, url=url, **kwargs)
+    resp_data = await resp.json()
+    if resp_data['ok'] == False:
+        logging.error(f"Chat ID -> {chat_id} msg: {resp_data}")
+    return resp_data

@@ -10,9 +10,10 @@ import apiFetch from '../../api/fetcher';
 import { API_URL } from '../../api/urls';
 import { useQueryClient } from 'react-query';
 import { useAppContext } from '../../AppContext';
+import { INTERVALS } from '../../utils/binance';
 
 export default function EditDialog({open, setOpen}) {
-  const {job, value} = useJobContext()
+  const {job, value, channels, resetCandles, interval, candles, message} = useJobContext()
   const queryClient = useQueryClient()
   const { setSnackbar } = useAppContext()
   const [isLoading, setIsLoading] = React.useState(false)
@@ -20,13 +21,22 @@ export default function EditDialog({open, setOpen}) {
   const handleClose = () => {
     setOpen(false);
   };
+
   const handleEdit = () => {
     const newJob = {...job}
-    newJob.config.rsi_value = value
+    const minutes = INTERVALS.find(interal_ => interal_.value === interval).minutes
+    const sinceWhen = `${minutes * candles}m ago`
+
+    newJob.config.rsi_value = parseInt(value)
+    newJob.channels = [...channels].map(channel => channel.id)
+    newJob.config.candles_to_reset = parseInt(resetCandles)
+    newJob.config.since_when =sinceWhen
+    newJob.config.msg =message
+
     setIsLoading(true)
     apiFetch(API_URL.editJob(),newJob)
     .then(response => {
-      //setOpen(false)
+      setOpen(false)
       queryClient.invalidateQueries({ queryKey: ['list_jobs'] })
       setSnackbar({ open: true, message: "Job Updated!", type: 'success' })
     })
@@ -50,8 +60,8 @@ export default function EditDialog({open, setOpen}) {
           {job?.type === "rsi" ? <RSIEditContent/> : <></>}
         </DialogContent>
         <DialogActions>
-          <Button disabled={isLoading} onClick={handleEdit}>Edit</Button>
-          <Button onClick={handleClose}>Close</Button>
+          <Button variant='contained' disabled={isLoading || channels.length === 0} onClick={handleEdit}>Edit</Button>
+          <Button variant='contained' onClick={handleClose}>Close</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>

@@ -72,7 +72,7 @@ export default function LogDialog({ open, setOpen, job }) {
         </>
       </DialogContent>
       <DialogActions>
-        <Button color="error" onClick={handleClose}>
+        <Button variant='contained' color="error" onClick={handleClose}>
           Close
         </Button>
       </DialogActions>

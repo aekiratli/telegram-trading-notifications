@@ -32,7 +32,7 @@ export default function ConfigDialog({ open, setOpen }) {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Close</Button>
+        <Button variant='contained' onClick={handleClose}>Close</Button>
       </DialogActions>
     </Dialog>
   );

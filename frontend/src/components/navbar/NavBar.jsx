@@ -61,7 +61,6 @@ export default function PersistentDrawerLeft() {
 
   const handleTheme = (e) => {
     setIsLightModeToggled(e.target.checked)
-    console.log(e.target.checked)
     if (e.target.checked)
       setSelectedTheme(LIGHT_THEME)
     else

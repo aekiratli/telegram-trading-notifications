@@ -46,8 +46,8 @@ export default function DeleteDialog({open, setOpen}) {
       >
         <DialogTitle>Deleting {job?.name}</DialogTitle>
         <DialogActions>
-          <Button disabled={isLoading} onClick={handleDelete}>Delete</Button>
-          <Button onClick={handleClose}>Close</Button>
+          <Button variant='contained' disabled={isLoading} onClick={handleDelete}>Delete</Button>
+          <Button variant='contained' onClick={handleClose}>Close</Button>
         </DialogActions>
       </Dialog>
   );

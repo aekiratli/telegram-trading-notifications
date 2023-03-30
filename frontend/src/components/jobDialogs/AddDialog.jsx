@@ -10,7 +10,7 @@ import { useQueryClient } from 'react-query';
 
 export default function AddDialog({ open, setOpen }) {
 
-  const { 
+  const {
     jobType,
     setJobType,
     jobData,
@@ -23,6 +23,12 @@ export default function AddDialog({ open, setOpen }) {
     candles,
     setCandles,
     setValue,
+    setChannels,
+    resetCandles,
+    setResetCandles,
+    channels,
+    setMessage,
+    message,
     value } = useJobContext()
 
   const queryClient = useQueryClient()
@@ -31,12 +37,15 @@ export default function AddDialog({ open, setOpen }) {
 
   const handleClose = () => {
     setOpen(false);
-    setJobType()
+    setJobType('')
     setInterval('')
     setCandles('')
     setName('')
-    setSymbol()
-    setValue()
+    setSymbol('')
+    setValue('')
+    setResetCandles('')
+    setMessage('')
+    setChannels([])
   };
 
   const handleJobChange = (e) => {
@@ -45,10 +54,11 @@ export default function AddDialog({ open, setOpen }) {
 
   const handleAdd = (e) => {
     const minutes = INTERVALS.find(interal_ => interal_.value === interval).minutes
-    const sinceWhen = `${minutes*candles}m ago`
+    const sinceWhen = `${minutes * candles}m ago`
     const payload = {
       name: name,
       job_type: jobType,
+      channels: [...channels].map(channel => channel.id),
       config: {
         pair: symbol,
         candle_interval: interval,
@@ -56,22 +66,24 @@ export default function AddDialog({ open, setOpen }) {
         rsi_value: parseInt(value),
         how_many_candles_left_to_reset: 0,
         last_run: 0,
-        candles_to_reset: 5,
+        msg: message,
+        candles_to_reset: parseInt(resetCandles),
       }
     }
+    console.log(payload)
     setIsLoading(true)
-    apiFetch(API_URL.addJob(),payload)
-    .then(response => {
-      setOpen(false)
-      queryClient.invalidateQueries({ queryKey: ['list_jobs'] })
-      setSnackbar({ open: true, message: "Job is Added", type: 'success' })
-    })
-    .catch(error => {
-      setSnackbar({ open: true, message: "Something went wrong", type: 'error' })
-    })
-    .finally(error => {
-      setIsLoading(false)
-    });
+    apiFetch(API_URL.addJob(), payload)
+      .then(response => {
+        setOpen(false)
+        queryClient.invalidateQueries({ queryKey: ['list_jobs'] })
+        setSnackbar({ open: true, message: "Job is Added", type: 'success' })
+      })
+      .catch(error => {
+        setSnackbar({ open: true, message: "Something went wrong", type: 'error' })
+      })
+      .finally(error => {
+        setIsLoading(false)
+      });
   };
 
   return (
@@ -94,7 +106,13 @@ export default function AddDialog({ open, setOpen }) {
         {jobType === 'rsi' ? <RSIAddContent /> : <></>}
       </DialogContent>
       <DialogActions>
-        <Button variant='contained' disabled={isLoading} onClick={handleAdd}>Add</Button>
+        <Button
+          variant='contained'
+          disabled={
+            isLoading || interval.length < 1 || symbol.length < 1 || !resetCandles || !candles || !value || channels.length === 0 || name.length < 1 }
+          onClick={handleAdd}>
+          Add
+        </Button>
         <Button variant='contained' onClick={handleClose}>Close</Button>
       </DialogActions>
     </Dialog>

@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { Edit, Delete, Add, Cable } from '@mui/icons-material';
 import FilterInput from '../components/filter';
-import { useFetchJobs, useFetchJobTypes, useFetchSymbols } from '../api/queries';
+import { useFetchJobs, useFetchJobTypes, useFetchSymbols, useFetchChannels } from '../api/queries';
 import SkeletonJobs from '../components/skeleton/JobsTable';
 import AddDialog from '../components/jobDialogs/AddDialog';
 import EditDialog from '../components/jobDialogs/EditDialog';
@@ -28,6 +28,7 @@ import { convertTimestampToDate } from '../utils/dates';
 const Job = () => {
   const { data, isLoading, isError } = useFetchJobs()
   const { data: jobData, isLoading: isJobDataLoading } = useFetchJobTypes()
+  const { data: channelData, isLoading: isChannelDataLoading } = useFetchChannels()
   const { data: symbolData } = useFetchSymbols()
 
   const [page, setPage] = useState(0);
@@ -41,9 +42,15 @@ const Job = () => {
   const [jobType, setJobType] = useState()
   const [job, setJob] = useState()
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [interval, setInterval] = useState();
-  const [symbol, setSymbol] = useState();
+  const [interval, setInterval] = useState('');
+  const [message, setMessage] = useState('');
+
+  const [symbol, setSymbol] = useState('');
   const [candles, setCandles] = useState('');
+  const [resetCandles, setResetCandles] = useState();
+
+  const [channels, setChannels] = useState([]);
+
   const [name, setName] = useState('');
   const [value, setValue] = useState('');
 
@@ -55,8 +62,16 @@ const Job = () => {
 
   const handleEdit = (id) => {
     const job_ = data.find(job => job.id === id)
+    console.log(job_)
     setJob(job_)
+    setChannels(job_.channels)
+    setInterval(job_.config.candle_interval)
     setValue(job_.config.rsi_value)
+    setResetCandles(job_.config.candles_to_reset)
+    const minutes = job_.config.since_when.split('m')[0]
+    const interval = INTERVALS.find(interval_ => interval_.value === job_.config.candle_interval).minutes
+    setCandles(minutes/interval)
+    setMessage(job_.config.msg)
     setIsEditDialogOpen(true)
   };
 
@@ -71,7 +86,6 @@ const Job = () => {
   };
 
   const handleNameFilter = (e) => {
-    console.log(e)
     setNameFilter(e.target.value);
   };
 
@@ -89,6 +103,8 @@ const Job = () => {
     setSymbol,
     candles,
     setCandles,
+    resetCandles,
+    setResetCandles,
     name,
     setName,
     jobType,
@@ -96,6 +112,12 @@ const Job = () => {
     symbolData,
     jobData,
     job,
+    isChannelDataLoading,
+    channelData,
+    setChannels,
+    channels,
+    setMessage,
+    message,
   }
 
   if (isLoading ||isError)
@@ -137,7 +159,7 @@ const Job = () => {
                   <TableCell>{INTERVALS.find(interval_ => interval_.value === entry.config?.candle_interval)?.label}</TableCell>
                   <TableCell>{entry.type.toUpperCase()}</TableCell>
                   <TableCell>{convertTimestampToDate(entry.config.last_run)}</TableCell>
-                  <TableCell>{entry.channels.map(channel => {return (<Button sx={{marginLeft:"5px"}} color='secondary' variant='contained'>{channel.name}</Button>)})}</TableCell>
+                  <TableCell>{entry.channels.map(channel => {return (<Button key={channel.name} sx={{marginLeft:"5px"}} color='secondary' variant='contained'>{channel.name}</Button>)})}</TableCell>
 
                   <TableCell align="right">
                     <Tooltip title="Show Config">

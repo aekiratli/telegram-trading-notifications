@@ -2,6 +2,8 @@ import * as React from 'react';
 import { InputLabel, MenuItem, Select, FormControl, TextField } from '@mui/material';
 import { INTERVALS } from '../../utils/binance';
 import { useJobContext } from './JobContext';
+import { Autocomplete } from '@mui/material';
+
 
 export default function RSIAddContent() {
 
@@ -18,6 +20,13 @@ export default function RSIAddContent() {
     setName,
     value,
     setValue,
+    channelData,
+    setChannels,
+    channels,
+    resetCandles,
+    setResetCandles,
+    message,
+    setMessage,
   } = useJobContext()
 
   const handleInterval = (e) => {
@@ -32,6 +41,10 @@ export default function RSIAddContent() {
     setName(e.target.value)
   };
 
+  const handleMessage = (e) => {
+    setMessage(e.target.value)
+  };
+
   const handleValue = (e) => {
     if (/^\d*$/.test(e.target.value))
       setValue(e.target.value)
@@ -42,6 +55,15 @@ export default function RSIAddContent() {
       setCandles(e.target.value)
   };
 
+  const handleResetCandles = (e) => {
+    if (/^\d*$/.test(e.target.value))
+      setResetCandles(e.target.value)
+  };
+
+  const handleChannels = (e, value) => {
+    setChannels(value)
+  };
+
   React.useEffect(() => {
     if (symbol && interval) {
       const intervalLabel = INTERVALS.find(interval_ => interval_.value === interval).label
@@ -49,6 +71,13 @@ export default function RSIAddContent() {
       setName(suggestedName)
     }
   }, [symbol, interval]);
+
+  React.useEffect(() => {
+    if (name.length > 0) {
+      const suggestedMsg = `➡️ RSI Alert for ${name} ⬅️`
+      setMessage(suggestedMsg)
+    }
+  }, [name]);
 
   React.useEffect(() => {
     if (interval) {
@@ -83,7 +112,18 @@ export default function RSIAddContent() {
         onChange={handleCandles}
         margin="dense"
         id="candles"
-        label="How Many Candles Needed"
+        label="How Many Candles for History"
+        type="text"
+        fullWidth
+        hiddenLabel
+      />
+      <TextField
+        required
+        value={resetCandles}
+        onChange={handleResetCandles}
+        margin="dense"
+        id="reset-candles"
+        label="How Many Candles for Resetting the Alert"
         type="text"
         fullWidth
         hiddenLabel
@@ -96,6 +136,34 @@ export default function RSIAddContent() {
         margin="dense"
         id="value"
         label="RSI Threshold"
+        type="text"
+        fullWidth
+      />
+      <FormControl required fullWidth margin="dense">
+        <Autocomplete
+          multiple
+          required
+          id="tags-standard"
+          onChange={handleChannels}
+          options={channelData}
+          value={channels}
+          getOptionLabel={(option) => option.name}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant="outlined"
+              label="Channels"
+            />
+          )}
+        />
+      </FormControl>
+      <TextField
+        required
+        onChange={handleMessage}
+        value={message}
+        autoFocus
+        margin="dense"
+        label="Alert message"
         type="text"
         fullWidth
       />

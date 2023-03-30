@@ -5,6 +5,8 @@ import asyncio
 from datetime import datetime
 import sys
 import warnings
+import traceback
+
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 now = int(datetime.now().timestamp())
@@ -24,8 +26,7 @@ from components.utils.binance_utils import KlineInterval, KlineIntervalSeconds
 from components.api.binance_fetcher import BinanceApiController
 from components.indicators.rsi import calculate_rsi
 from components.api.telegram_api import TelegramApiController
-from config import rsi_logging
-# Init Logging
+from config import job_logger
 
 async def main():
     # Connect to the database
@@ -33,25 +34,29 @@ async def main():
         db_url=URI,
         modules={'models': ['components.job.models']}
     )
-    job = await Job.get(id=id)
-    rsi_logging(job.name)
+
+    job = await Job.get(id=id).prefetch_related('channels')
+    chat_ids = []
+    for channel in job.channels:
+        chat_ids.append(channel.chat_id)
+
+    job_logger(job.name)
+
     config = argparse.Namespace(**job.config)
+
     seconds = getattr(KlineIntervalSeconds, config.candle_interval).value
     # Add some attrs first time
     if config.last_run == 0:
         job.config["is_above_threshold"] = False
     if (now - config.last_run >= seconds):
         logging.info(f"Deploying {job.name} ... ")
-        #TelegramApiController('1041353666').send_message('\U00002716 !!!')
         job.config["last_run"] = now
         if (config.how_many_candles_left_to_reset == 0):
             # Fetch data
-            df = BinanceApiController().get_klines(pair=config.pair,
-                                                candle_interval=getattr(KlineInterval, config.candle_interval).value,
-                                                since_when=config.since_when,
-                                                )
-            
-            #TelegramApiController('1041353666').send_rsi_plot(df)
+            df = BinanceApiController(job.name).get_klines(pair=config.pair,
+                                                            candle_interval=getattr(KlineInterval, config.candle_interval).value,
+                                                            since_when=config.since_when,
+                                                            )
             # Get RSI
             df = calculate_rsi(df)
             # Do calculations
@@ -60,6 +65,7 @@ async def main():
                 if job.config["is_above_threshold"] == False:
                     # Send notifications
                     logging.info(f"Sending Notifications for {job.name} ... ")
+                    await TelegramApiController(chat_ids, job.name).send_message(config.msg)
                     job.config["how_many_candles_left_to_reset"] = config.candles_to_reset
                 else:
                     logging.info(f"Value did not went below threshold since last alert ... ")
@@ -76,4 +82,8 @@ async def main():
 
 #Run the script
 if __name__ == '__main__':
-    asyncio.run(main())
+    try:
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        asyncio.run(main())
+    except:
+        logging.error(f"Error on: deploy_rsi_job.py -> {traceback.format_exc()}")

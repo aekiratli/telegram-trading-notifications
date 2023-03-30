@@ -7,14 +7,13 @@ load_dotenv()
 SECRET_KEY = 'super_secret_key'
 TELEGRAM_SECRET = os.getenv("TELEGRAM_SECRET")
 
-def rsi_logging(name):
+logger_db_client = logging.getLogger("tortoise.db_client")
+logger_db_client.setLevel(logging.ERROR)
 
-    logger_db_client = logging.getLogger("tortoise.db_client")
-    logger_db_client.setLevel(logging.ERROR)
+logger_tortoise = logging.getLogger("tortoise")
+logger_tortoise.setLevel(logging.ERROR)
 
-    logger_tortoise = logging.getLogger("tortoise")
-    logger_tortoise.setLevel(logging.ERROR)
-
+def job_logger(name):
     
     logging.basicConfig(filename=f'./logs/{name}.log',
                         level=logging.INFO, 
