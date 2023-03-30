@@ -9,4 +9,7 @@ export const API_URL = {
     listSymbol: () => `/utils/list/symbol`,
     addSymbols: () => `/utils/add/symbols`,
     listJobTypes: () => `/job_type/list`,
+    listChannels: () => `/channels/list`,
+    addChannel: () => `/channels/add`,
+    deleteChannel: (id) => `/channels/delete/${id}`,
 }

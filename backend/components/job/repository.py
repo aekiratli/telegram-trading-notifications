@@ -5,7 +5,7 @@ class JobController:
 
     @classmethod
     async def get_jobs(self) -> list:
-        jobs = await Job.filter().all().prefetch_related('job_type')
+        jobs = await Job.filter().all().prefetch_related('job_type', 'channels')
         jobs = jobs_to_dict_of_array(jobs)
         reversed_list_of_dicts = list(reversed(jobs))
         return reversed_list_of_dicts
@@ -40,7 +40,8 @@ class JobController:
         return job_type
     
 def jobs_to_dict_of_array(jobs: List[Job]) -> List[dict]:
-    return [{'id': t.id, 'name': t.name, 'config': t.config, 'type': t.job_type.name} for t in jobs]
+    return [{'id': t.id, 'name': t.name, 'config': t.config, 'type': t.job_type.name, 
+             'channels': [{'id': c.id, 'name': c.name, 'chat_id': c.chat_id} for c in t.channels]} for t in jobs]
 
 def job_to_dict(job: Job) -> List[dict]:
     return {'id': job.id, 'name': job.name}

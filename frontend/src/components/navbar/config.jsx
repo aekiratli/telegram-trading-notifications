@@ -6,7 +6,7 @@ export const SIDEBAR_ITEMS = [
     },
     {
         display_name: 'Trades',
-        icon: 'GiteIcon',
+        icon: 'ShowChartIcon',
         navigate_to: '/trades'
     },
     {

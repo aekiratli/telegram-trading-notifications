@@ -5,7 +5,7 @@ import { useAppContext } from './AppContext';
 
 function Protected({ children }) {
 
-  const { setSnackbar, setUsername } =useAppContext()
+  const { setSnackbar, setUsername, isLoggedIn, setIsLoggedIn } = useAppContext()
   const storedToken = localStorage.getItem("token")
   const decodedToken = decodeToken(storedToken);
   const isTokenExpired = isExpired(storedToken);
@@ -15,11 +15,12 @@ function Protected({ children }) {
       <Navigate to="/login" replace />
       setSnackbar({ open: true, message: "Login Expired", type: 'error' })
     }
-    else
-     {
+    else {
+      if (!isLoggedIn)
+        setIsLoggedIn(true)
       setUsername(decodedToken.sub)
       isAuthenticated = true
-     }
+    }
   }
 
   if (!isAuthenticated) {

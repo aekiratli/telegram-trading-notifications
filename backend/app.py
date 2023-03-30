@@ -5,6 +5,7 @@ from backends.postgre import APPS_MODELS, connect_database
 from tortoise import Tortoise
 from components.user.views import users
 from components.job.views import job, job_type
+from components.notifications.views import channel
 from components.logs.views import ws
 from components.utils.views import utils
 from sanic import Blueprint
@@ -20,6 +21,7 @@ def create_app() -> Sanic:
     connect_database(app)
     group = Blueprint.group(
         users,
+        channel,
         utils,
         job_type,
         job,

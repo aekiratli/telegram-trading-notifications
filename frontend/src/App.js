@@ -9,7 +9,7 @@ import Settings from './pages/Settings';
 import SnackbarController from './components/notification/Snackbar';
 import NavBar from './components/navbar/NavBar';
 import { Main } from './components/navbar/styles';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import { useAppContext } from './AppContext';
 import {
   QueryClient,
@@ -20,48 +20,15 @@ const queryClient = new QueryClient()
 
 const App = () => {
 
-  const { isSidebarOpen } = useAppContext()
-
-  // const THEME = createTheme({
-  //   typography: {
-  //     "fontFamily": `"Quicksand"`,
-  //     "fontSize": 14,
-  //     "fontWeight": "bold",
-  //   }
-  // });
-
-const THEME = createTheme({
-      typography: {
-      "fontFamily": `"Quicksand"`,
-      "fontSize": 14,
-      "fontWeight": "bold",
-    },
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#607d8b', // blue gray
-    },
-    secondary: {
-      main: '#8bc34a', // light green
-    },
-    background: {
-      default: '#263238', // dark blue gray
-      paper: '#37474f', // blue gray
-    },
-    text: {
-      primary: '#ffffff', // white
-      secondary: '#cfd8dc', // light blue gray
-    },
-  },
-});
+  const { isSidebarOpen, selectedTheme, isLoggedIn } = useAppContext()
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={THEME}>
+      <ThemeProvider theme={selectedTheme}>
         <SnackbarController />
         <BrowserRouter>
           <NavBar />
-          <Main open={isSidebarOpen}>
+          <Main open={isSidebarOpen} isLoggedIn={isLoggedIn}>
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route

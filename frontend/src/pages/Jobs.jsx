@@ -102,7 +102,7 @@ const Job = () => {
     return (<SkeletonJobs />)
   return (
     <JobContext.Provider value={values}>
-      <TableContainer component={Paper}>
+      <TableContainer style={{paddingLeft: "20px",paddingLeft: "20px"}} component={Paper}>
         <Box display="flex" justifyContent="flex-end" p={2}>
           <FilterInput onChange={handleNameFilter}/>
           <Button onClick={() => { setIsAddDialogOpen(true) }} variant="contained" startIcon={<Add />} color="primary">
@@ -117,6 +117,7 @@ const Job = () => {
               <TableCell>Interval</TableCell>
               <TableCell>Type</TableCell>
               <TableCell>Last Run</TableCell>
+              <TableCell>Channels</TableCell>
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -136,6 +137,8 @@ const Job = () => {
                   <TableCell>{INTERVALS.find(interval_ => interval_.value === entry.config?.candle_interval)?.label}</TableCell>
                   <TableCell>{entry.type.toUpperCase()}</TableCell>
                   <TableCell>{convertTimestampToDate(entry.config.last_run)}</TableCell>
+                  <TableCell>{entry.channels.map(channel => {return (<Button sx={{marginLeft:"5px"}} color='secondary' variant='contained'>{channel.name}</Button>)})}</TableCell>
+
                   <TableCell align="right">
                     <Tooltip title="Show Config">
                       <IconButton onClick={() => handleConfig(entry.id)}>

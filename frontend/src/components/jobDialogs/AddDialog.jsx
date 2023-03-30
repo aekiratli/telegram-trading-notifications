@@ -94,8 +94,8 @@ export default function AddDialog({ open, setOpen }) {
         {jobType === 'rsi' ? <RSIAddContent /> : <></>}
       </DialogContent>
       <DialogActions>
-        <Button disabled={isLoading} onClick={handleAdd}>Add</Button>
-        <Button onClick={handleClose}>Close</Button>
+        <Button variant='contained' disabled={isLoading} onClick={handleAdd}>Add</Button>
+        <Button variant='contained' onClick={handleClose}>Close</Button>
       </DialogActions>
     </Dialog>
   );

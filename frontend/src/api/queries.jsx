@@ -34,3 +34,11 @@ export const useFetchJobs = (options) => {
     );
   };
   
+  export const useFetchChannels = (options) => {
+    return useProxyQuery(
+      "list_channels",
+      () => apiFetch(API_URL.listChannels()),
+      options
+    );
+  };
+  

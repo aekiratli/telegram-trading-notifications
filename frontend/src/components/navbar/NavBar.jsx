@@ -24,9 +24,13 @@ import { SIDEBAR_ITEMS } from './config';
 import { loadIcon } from '../icons';
 import { Main, AppBar, drawerWidth, DrawerHeader, StyledLink } from './styles';
 import TelegramIcon from '@mui/icons-material/Telegram';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
+import Switch from '@mui/material/Switch';
+import { LIGHT_THEME, DARK_THEME } from '../../themes';
 
 export default function PersistentDrawerLeft() {
-  const { setIsSidebarOpen, isSidebarOpen, userName } = useAppContext();
+  const { setIsSidebarOpen, isSidebarOpen, userName, setSelectedTheme,setIsLightModeToggled, isLightModeToggled } = useAppContext();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -54,6 +58,16 @@ export default function PersistentDrawerLeft() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleTheme = (e) => {
+    setIsLightModeToggled(e.target.checked)
+    console.log(e.target.checked)
+    if (e.target.checked)
+      setSelectedTheme(LIGHT_THEME)
+    else
+      setSelectedTheme(DARK_THEME)
+  };
+
 
   if (location.pathname === '/login') {
     return <></>; // Render nothing if the path is '/login'
@@ -87,7 +101,7 @@ export default function PersistentDrawerLeft() {
               <AccountCircle />
             </IconButton>
             <Menu
-            style={{marginTop:"30px"}}
+              style={{ marginTop: "30px" }}
               id="menu-appbar"
               anchorEl={anchorEl}
               anchorOrigin={{
@@ -128,26 +142,39 @@ export default function PersistentDrawerLeft() {
           </IconButton>
         </DrawerHeader>
         <Divider />
-        <List>
-          {
-            SIDEBAR_ITEMS.map(item => {
-              return (
-                <StyledLink key={item.display_name} to={item.navigate_to}>
-                  <ListItem disablePadding>
-                    <ListItemButton>
-                      <ListItemIcon>
-                        {loadIcon(item.icon)}
-                      </ListItemIcon>
-                      <ListItemText primary={item.display_name} />
-                    </ListItemButton>
-                  </ListItem>
-                </StyledLink>
-              )
-            })
-          }
-        </List>
+        <Box height="100%" display="flex" flexDirection="column" justifyContent="space-between">
+          <List>
+            {
+              SIDEBAR_ITEMS.map(item => {
+                return (
+                  <StyledLink key={item.display_name} to={item.navigate_to}>
+                    <ListItem disablePadding>
+                      <ListItemButton>
+                        <ListItemIcon>
+                          {loadIcon(item.icon)}
+                        </ListItemIcon>
+                        <ListItemText primary={item.display_name} />
+                      </ListItemButton>
+                    </ListItem>
+                  </StyledLink>
+                )
+              })
+            }
+            <Divider style={{ position: "relative", bottom: "1px" }} />
+          </List>
+          <div>
+            <Divider style={{ position: "relative", bottom: "2px" }}/>
+            <Box height="48px" display="flex" flexDirection="row" justifyContent="center" alignItems="center">
+              <DarkModeIcon />
+              <Switch value={isLightModeToggled} onChange={handleTheme} size="small"/>
+              <LightModeIcon />
+            </Box>
+          </div>
+        </Box>
       </Drawer>
+
       <DrawerHeader />
-    </Box>
+
+    </Box >
   );
 }
