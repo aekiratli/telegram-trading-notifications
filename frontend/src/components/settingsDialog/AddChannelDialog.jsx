@@ -46,7 +46,7 @@ export default function AddDialog({ open, setOpen }) {
   };
 
   const handleChatID = (e) => {
-    if (/^\d*$/.test(e.target.value))
+    if (/^-?\d+$/.test(e.target.value))
       setChatId(e.target.value)
   };
 

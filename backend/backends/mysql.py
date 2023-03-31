@@ -2,7 +2,9 @@ from tortoise.contrib.sanic import register_tortoise
 
 APPS_MODELS = [
     "components.user.models",
+    "components.notifications.models",
     "components.job.models",
+    "components.utils.models",
     "aerich.models",
 ]
 

@@ -4,6 +4,7 @@ import Protected from './ProtectedRoute';
 import Login from './pages/Login';
 import Jobs from './pages/Jobs';
 import Logs from './pages/Logs';
+import TradesPage from './pages/Trades';
 import NotFoundPage from './pages/NotFound';
 import Settings from './pages/Settings';
 import SnackbarController from './components/notification/Snackbar';
@@ -48,6 +49,14 @@ const App = () => {
                 }
               />
               <Route
+                path="/trades"
+                element={
+                  <Protected >
+                    <TradesPage />
+                  </Protected>
+                }
+              />
+              <Route
                 path="/settings"
                 element={
                   <Protected>
@@ -59,7 +68,7 @@ const App = () => {
                 path="/"
                 element={<Navigate to="/jobs" />}
               />
-              <Route path="*" element={<NotFoundPage/>} />
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Main>
         </BrowserRouter>
