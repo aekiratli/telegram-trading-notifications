@@ -70,7 +70,6 @@ export default function AddDialog({ open, setOpen }) {
         candles_to_reset: parseInt(resetCandles),
       }
     }
-    console.log(payload)
     setIsLoading(true)
     apiFetch(API_URL.addJob(), payload)
       .then(response => {

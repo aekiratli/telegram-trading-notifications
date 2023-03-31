@@ -62,7 +62,6 @@ const Job = () => {
 
   const handleEdit = (id) => {
     const job_ = data.find(job => job.id === id)
-    console.log(job_)
     setJob(job_)
     setChannels(job_.channels)
     setInterval(job_.config.candle_interval)

@@ -5,6 +5,7 @@ APPS_MODELS = [
     "components.notifications.models",
     "components.job.models",
     "components.utils.models",
+    "components.trades.models",
     "aerich.models",
 ]
 

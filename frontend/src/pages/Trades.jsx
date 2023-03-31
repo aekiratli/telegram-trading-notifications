@@ -13,23 +13,24 @@ import {
   Box,
   TablePagination,
 } from '@mui/material';
-import { Edit, Delete, Add, Cable } from '@mui/icons-material';
+import { Edit, Delete, Add, Cable, Circle } from '@mui/icons-material';
 import FilterInput from '../components/filter';
-import { useFetchJobs, useFetchJobTypes, useFetchSymbols, useFetchChannels } from '../api/queries';
+import { useFetchTrades } from '../api/queries';
 import SkeletonJobs from '../components/skeleton/JobsTable';
+import {convertTimestampToDate} from '../utils/dates'
 import AddDialog from '../components/tradeDialogs/newTradeDialog';
+import DeleteDialog from '../components/tradeDialogs/DeleteDialog';
 
 const Trades = () => {
-  //const { data, isLoading, isError } = useFetchJobs()
+  const { data: tradesData, isLoading :isTradesLoading, isError } = useFetchTrades()
   const [page, setPage] = useState(0);
   const [nameFilter, setNameFilter] = useState('');
+  const [trade, setTrade] = useState({});
+
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-    const isLoading = false;
-    const data = [{market: "buy", symbol:"some symbol", price:5,date:123123, channels: [{id:1, name:"sa"}]}]
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
-
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -44,69 +45,79 @@ const Trades = () => {
     setPage(0);
   };
 
-  const handleDelete = (e) => {
-    console.log("Deleting")
+  const handleDelete = (entry) => {
+    setTrade(entry)
+    setIsDeleteDialogOpen(true)
   };
 
-  if (isLoading)
+  if (isTradesLoading)
     return (<SkeletonJobs />)
   return (
-      <TableContainer style={{paddingLeft: "20px"}} component={Paper}>
-        <Box display="flex" justifyContent="flex-end" p={2}>
-          <FilterInput onChange={handleNameFilter}/>
-          <Button onClick={() => (setIsAddDialogOpen(true))} variant="contained" startIcon={<Add />} color="primary">
-            New Order
-          </Button>
-        </Box>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Symbol</TableCell>
-              <TableCell>Market</TableCell>
-              <TableCell>Price</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell>Channels</TableCell>
-              <TableCell align="right">Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {[...data]
-              .filter(function doFilter(item) {
-                if (nameFilter.length > 0)
-                  return item.name.includes(nameFilter)
-                else
-                  return item
-              })
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((entry, index) => (
-                <TableRow key={index}>
-                  <TableCell>{entry.symbol}</TableCell>
-                  <TableCell>{entry.market}</TableCell>
-                  <TableCell>{entry.price}</TableCell>
-                  <TableCell>{entry.date}</TableCell>
-                  <TableCell>{entry.channels.map(channel => {return (<Button key={channel.name} sx={{marginLeft:"5px"}} color='secondary' variant='contained'>{channel.name}</Button>)})}</TableCell>
-                  <TableCell align="right">
-                    <Tooltip title="Delete">
-                      <IconButton onClick={() => handleDelete(entry.id)}>
-                        <Delete />
-                      </IconButton>
-                    </Tooltip>
+    <TableContainer style={{ paddingLeft: "20px" }} component={Paper}>
+      <Box display="flex" justifyContent="flex-end" p={2}>
+        <FilterInput onChange={handleNameFilter} />
+        <Button onClick={() => (setIsAddDialogOpen(true))} variant="contained" startIcon={<Add />} color="primary">
+          New Order
+        </Button>
+      </Box>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Symbol</TableCell>
+            <TableCell>Market</TableCell>
+            <TableCell>Price</TableCell>
+            <TableCell>Date</TableCell>
+            <TableCell>Channels</TableCell>
+            <TableCell>Risk</TableCell>
+            <TableCell align="right">Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {[...tradesData]
+            .filter(function doFilter(item) {
+              if (nameFilter.length > 0)
+                return item.name.includes(nameFilter)
+              else
+                return item
+            })
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((entry, index) => (
+              <TableRow key={index}>
+                <TableCell>{entry.symbol}</TableCell>
+                <TableCell>
+                  <Button color={entry.market === 'buy' ? 'success' : 'error'} variant='contained'>{entry.market.toUpperCase()}</Button>
                   </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={data.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-        <AddDialog open={isAddDialogOpen} setOpen={setIsAddDialogOpen}/>
-      </TableContainer>
+                <TableCell>{entry.price}</TableCell>
+                <TableCell>{convertTimestampToDate(entry.date)}</TableCell>
+                <TableCell>{entry.channels.map(channel => { return (<Button key={channel.name} sx={{ marginLeft: "5px" }} color='secondary' variant='contained'>{channel.name}</Button>) })}</TableCell>
+                <TableCell>
+                  {entry.risk === 'low' && <Circle sx={{color:'green'}} />}
+                  {entry.risk === 'medium' && <Circle sx={{color:'orange'}} />}
+                  {entry.risk === 'high' && <Circle sx={{color:'red'}} />}
+                </TableCell>
+                <TableCell align="right">
+                  <Tooltip title="Delete">
+                    <IconButton onClick={() => handleDelete(entry)}>
+                      <Delete />
+                    </IconButton>
+                  </Tooltip>
+                </TableCell>
+              </TableRow>
+            ))}
+        </TableBody>
+      </Table>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={tradesData.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+      <AddDialog open={isAddDialogOpen} setOpen={setIsAddDialogOpen} />
+      <DeleteDialog open={isDeleteDialogOpen} setOpen={setIsDeleteDialogOpen} trade={trade}/>
+    </TableContainer>
   );
 };
 

@@ -16,4 +16,6 @@ export const INTERVALS = [
     {minutes:43800, label: '1M',value :"KLINE_INTERVAL_1MONTH"} 
 ]
 
-export const MARKET = ['BUY', 'SELL']
+export const MARKET = ['buy', 'sell']
+
+export const RISK = ['low', 'medium', 'high']

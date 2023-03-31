@@ -11,5 +11,8 @@ export const API_URL = {
     listJobTypes: () => `/job_type/list`,
     listChannels: () => `/channels/list`,
     addChannel: () => `/channels/add`,
+    addTrade: () => `/trades/add`,
+    listTrade: () => `/trades/list`,
+    deleteTrade: (id) => `/trades/delete/${id}`,
     deleteChannel: (id) => `/channels/delete/${id}`,
 }

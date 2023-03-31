@@ -42,3 +42,11 @@ export const useFetchJobs = (options) => {
     );
   };
   
+  export const useFetchTrades = (options) => {
+    return useProxyQuery(
+      "list_trades",
+      () => apiFetch(API_URL.listTrade()),
+      options
+    );
+  };
+  
