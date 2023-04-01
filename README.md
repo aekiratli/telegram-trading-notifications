@@ -5,3 +5,4 @@
 
 * reset candle optional 
 add option to gt lw
+*
