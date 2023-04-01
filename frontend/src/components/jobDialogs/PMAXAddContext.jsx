@@ -5,7 +5,7 @@ import { useJobContext } from './JobContext';
 import { Autocomplete } from '@mui/material';
 
 
-export default function RSIAddContent() {
+export default function PMAXAddContent() {
 
   const {
     symbolData,
@@ -45,19 +45,9 @@ export default function RSIAddContent() {
     setMessage(e.target.value)
   };
 
-  const handleValue = (e) => {
-    if (/^\d*$/.test(e.target.value))
-      setValue(e.target.value)
-  };
-
   const handleCandles = (e) => {
     if (/^\d*$/.test(e.target.value))
       setCandles(e.target.value)
-  };
-
-  const handleResetCandles = (e) => {
-    if (/^\d*$/.test(e.target.value))
-      setResetCandles(e.target.value)
   };
 
   const handleChannels = (e, value) => {
@@ -65,6 +55,9 @@ export default function RSIAddContent() {
   };
 
   React.useEffect(() => {
+    setValue('0')
+    setResetCandles('0')
+
     if (symbol && interval) {
       const intervalLabel = INTERVALS.find(interval_ => interval_.value === interval).label
       const suggestedName = symbol + '_' + jobType.toUpperCase() + '_' + intervalLabel.toUpperCase()
@@ -82,8 +75,7 @@ export default function RSIAddContent() {
   React.useEffect(() => {
     if (interval) {
       const minutes = INTERVALS.find(interal_ => interal_.value === interval).minutes
-      //const suggestedCandles = 720 / minutes
-      const suggestedCandles = 16
+      const suggestedCandles = 720 / minutes
       if (suggestedCandles > 1)
         setCandles(suggestedCandles)
     }
@@ -117,28 +109,6 @@ export default function RSIAddContent() {
         type="text"
         fullWidth
         hiddenLabel
-      />
-      <TextField
-        required
-        value={resetCandles}
-        onChange={handleResetCandles}
-        margin="dense"
-        id="reset-candles"
-        label="How Many Candles for Resetting the Alert"
-        type="text"
-        fullWidth
-        hiddenLabel
-      />
-      <TextField
-        required
-        autoFocus
-        value={value}
-        onChange={handleValue}
-        margin="dense"
-        id="value"
-        label="RSI Threshold"
-        type="text"
-        fullWidth
       />
       <FormControl required fullWidth margin="dense">
         <Autocomplete

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import RSIAddContent from './RSIAddContent';
+import PMAXAddContent from './PMAXAddContext';
 import { useJobContext } from './JobContext';
 import { useAppContext } from '../../AppContext';
 import apiFetch from '../../api/fetcher';
@@ -43,7 +44,7 @@ export default function AddDialog({ open, setOpen }) {
     setName('')
     setSymbol('')
     setValue('')
-    setResetCandles('')
+    setResetCandles('0')
     setMessage('')
     setChannels([])
   };
@@ -55,25 +56,49 @@ export default function AddDialog({ open, setOpen }) {
   const handleAdd = (e) => {
     const minutes = INTERVALS.find(interal_ => interal_.value === interval).minutes
     const sinceWhen = `${minutes * candles}m ago`
-    const payload = {
-      name: name,
-      job_type: jobType,
-      channels: [...channels].map(channel => channel.id),
-      config: {
-        pair: symbol,
-        candle_interval: interval,
-        since_when: sinceWhen,
-        rsi_value: parseInt(value),
-        how_many_candles_left_to_reset: 0,
-        last_run: 0,
-        msg: message,
-        candles_to_reset: parseInt(resetCandles),
+    let payload;
+    if (jobType === 'rsi')
+      payload = {
+        name: name,
+        job_type: jobType,
+        channels: [...channels].map(channel => channel.id),
+        config: {
+          pair: symbol,
+          candle_interval: interval,
+          since_when: sinceWhen,
+          rsi_value: parseInt(value),
+          how_many_candles_left_to_reset: 0,
+          last_run: 0,
+          msg: message,
+          candles_to_reset: parseInt(resetCandles),
+        }
       }
-    }
+    else
+      payload = {
+        name: name,
+        job_type: jobType,
+        channels: [...channels].map(channel => channel.id),
+        config: {
+          pair: symbol,
+          candle_interval: interval,
+          since_when: sinceWhen,
+          last_run: 0,
+          msg: message,
+        }
+      }
     setIsLoading(true)
     apiFetch(API_URL.addJob(), payload)
       .then(response => {
         setOpen(false)
+        setJobType('')
+        setInterval('')
+        setCandles('')
+        setName('')
+        setSymbol('')
+        setValue('')
+        setResetCandles('0')
+        setMessage('')
+        setChannels([])
         queryClient.invalidateQueries({ queryKey: ['list_jobs'] })
         setSnackbar({ open: true, message: "Job is Added", type: 'success' })
       })
@@ -103,12 +128,13 @@ export default function AddDialog({ open, setOpen }) {
           </Select>
         </FormControl>
         {jobType === 'rsi' ? <RSIAddContent /> : <></>}
+        {jobType === 'pmax' ? <PMAXAddContent /> : <></>}
       </DialogContent>
       <DialogActions>
         <Button
           variant='contained'
           disabled={
-            isLoading || interval.length < 1 || symbol.length < 1 || !resetCandles || !candles || !value || channels.length === 0 || name.length < 1 }
+            isLoading || interval.length < 1 || symbol.length < 1 || !resetCandles || !candles || !value || channels.length === 0 || name.length < 1}
           onClick={handleAdd}>
           Add
         </Button>

@@ -46,8 +46,8 @@ const Job = () => {
   const [message, setMessage] = useState('');
 
   const [symbol, setSymbol] = useState('');
-  const [candles, setCandles] = useState('');
-  const [resetCandles, setResetCandles] = useState();
+  const [candles, setCandles] = useState('16');
+  const [resetCandles, setResetCandles] = useState('0');
 
   const [channels, setChannels] = useState([]);
 

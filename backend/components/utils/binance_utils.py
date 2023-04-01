@@ -1,4 +1,5 @@
 from enum import Enum
+import datetime
 
 class KlineInterval(Enum):
     KLINE_INTERVAL_1MINUTE = '1m'
@@ -33,3 +34,23 @@ class KlineIntervalSeconds(Enum):
     KLINE_INTERVAL_3DAY = 259200
     KLINE_INTERVAL_1WEEK = 604800
     KLINE_INTERVAL_1MONTH = 2592000
+
+def check_interval(current_time: int, interval_seconds: int) -> bool:
+
+    delay_seconds = 5  # Acceptable interval for delay
+
+    # Round the Unix timestamp to the nearest minute approximately
+    rounded_time = (current_time // interval_seconds) * interval_seconds
+
+    # Calculate the difference between current time and rounded time to the nearest minute
+    difference = current_time - rounded_time
+
+    if difference <= delay_seconds:
+        # The current time is close to the nearest minute
+        return True
+    
+    return False
+
+def get_next_run(current_time: int, interval_seconds: int) -> datetime.datetime:
+
+    return datetime.datetime.fromtimestamp((current_time // interval_seconds) * interval_seconds + interval_seconds)

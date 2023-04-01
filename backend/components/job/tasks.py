@@ -17,9 +17,12 @@ async def deploy_jobs():
     await asyncio.sleep(time_to_wait)
     while True:
         logger.info("Running Jobs Every 60 seconds ...")
-        jobs = await Job.filter().all()
+        jobs = await Job.filter().all().prefetch_related('job_type')
         # Run jobs
         for job in jobs:
-            command = ['python3.9', f'{SCRIPTS_PATH}deploy_rsi_job.py', f'--id={job.id}', f'--path_to_append={FULL_PATH}']
+            if job.job_type.name == 'rsi':
+                command = ['python', f'{SCRIPTS_PATH}deploy_rsi_job.py', f'--id={job.id}', f'--path_to_append={FULL_PATH}']
+            if job.job_type.name == 'pmax':
+                command = ['python', f'{SCRIPTS_PATH}deploy_pmax_job.py', f'--id={job.id}', f'--path_to_append={FULL_PATH}']
             subprocess.Popen(command)
         await asyncio.sleep(60)
