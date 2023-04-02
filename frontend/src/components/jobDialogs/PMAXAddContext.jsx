@@ -1,12 +1,17 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react';
-import { InputLabel, MenuItem, Select, FormControl, TextField } from '@mui/material';
+import {
+  InputLabel,
+  MenuItem,
+  Select,
+  FormControl,
+  TextField,
+} from '@mui/material';
 import { INTERVALS } from '../../utils/binance';
 import { useJobContext } from './JobContext';
 import { Autocomplete } from '@mui/material';
 
-
 export default function PMAXAddContent() {
-
   const {
     symbolData,
     jobType,
@@ -18,66 +23,71 @@ export default function PMAXAddContent() {
     setCandles,
     name,
     setName,
-    value,
     setValue,
     channelData,
     setChannels,
     channels,
-    resetCandles,
     setResetCandles,
     message,
     setMessage,
-  } = useJobContext()
+  } = useJobContext();
 
   const handleInterval = (e) => {
-    setInterval(e.target.value)
+    setInterval(e.target.value);
   };
 
   const handleSymbol = (e) => {
-    setSymbol(e.target.value)
+    setSymbol(e.target.value);
   };
 
   const handleName = (e) => {
-    setName(e.target.value)
+    setName(e.target.value);
   };
 
   const handleMessage = (e) => {
-    setMessage(e.target.value)
+    setMessage(e.target.value);
   };
 
   const handleCandles = (e) => {
-    if (/^\d*$/.test(e.target.value))
-      setCandles(e.target.value)
+    if (/^\d*$/.test(e.target.value)) setCandles(e.target.value);
   };
 
   const handleChannels = (e, value) => {
-    setChannels(value)
+    setChannels(value);
   };
 
   React.useEffect(() => {
-    setValue('0')
-    setResetCandles('0')
+    setValue('0');
+    setResetCandles('0');
 
     if (symbol && interval) {
-      const intervalLabel = INTERVALS.find(interval_ => interval_.value === interval).label
-      const suggestedName = symbol + '_' + jobType.toUpperCase() + '_' + intervalLabel.toUpperCase()
-      setName(suggestedName)
+      const intervalLabel = INTERVALS.find(
+        (interval_) => interval_.value === interval
+      ).label;
+      const suggestedName =
+        symbol +
+        '_' +
+        jobType.toUpperCase() +
+        '_' +
+        intervalLabel.toUpperCase();
+      setName(suggestedName);
     }
   }, [symbol, interval]);
 
   React.useEffect(() => {
     if (name.length > 0) {
-      const suggestedMsg = `➡️ RSI Alert for ${name} ⬅️`
-      setMessage(suggestedMsg)
+      const suggestedMsg = `➡️ RSI Alert for ${name} ⬅️`;
+      setMessage(suggestedMsg);
     }
   }, [name]);
 
   React.useEffect(() => {
     if (interval) {
-      const minutes = INTERVALS.find(interal_ => interal_.value === interval).minutes
-      const suggestedCandles = 720 / minutes
-      if (suggestedCandles > 1)
-        setCandles(suggestedCandles)
+      const minutes = INTERVALS.find(
+        (interal_) => interal_.value === interval
+      ).minutes;
+      const suggestedCandles = 720 / minutes;
+      if (suggestedCandles > 1) setCandles(suggestedCandles);
     }
   }, [interval]);
 
@@ -85,17 +95,30 @@ export default function PMAXAddContent() {
     <>
       <FormControl required fullWidth margin="dense">
         <InputLabel id="interval-label">Interval</InputLabel>
-        <Select onChange={handleInterval} labelId="interval-label" id="interval" label="Interval">
-          {INTERVALS.map(item => {
-            return (<MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>)
+        <Select
+          onChange={handleInterval}
+          labelId="interval-label"
+          id="interval"
+          label="Interval"
+        >
+          {INTERVALS.map((item) => {
+            return (
+              <MenuItem key={item.value} value={item.value}>
+                {item.label}
+              </MenuItem>
+            );
           })}
         </Select>
       </FormControl>
       <FormControl required fullWidth margin="dense">
         <InputLabel id="symbol-label">Symbol</InputLabel>
         <Select onChange={handleSymbol} label="symbol">
-          {symbolData.map(symbol => {
-            return <MenuItem key={symbol.name} value={symbol.name}>{symbol.name}</MenuItem>
+          {symbolData.map((symbol) => {
+            return (
+              <MenuItem key={symbol.name} value={symbol.name}>
+                {symbol.name}
+              </MenuItem>
+            );
           })}
         </Select>
       </FormControl>
@@ -120,11 +143,7 @@ export default function PMAXAddContent() {
           value={channels}
           getOptionLabel={(option) => option.name}
           renderInput={(params) => (
-            <TextField
-              {...params}
-              variant="outlined"
-              label="Channels"
-            />
+            <TextField {...params} variant="outlined" label="Channels" />
           )}
         />
       </FormControl>
@@ -149,5 +168,5 @@ export default function PMAXAddContent() {
         fullWidth
       />
     </>
-  )
+  );
 }

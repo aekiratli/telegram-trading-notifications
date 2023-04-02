@@ -1,5 +1,5 @@
-import React, { useRef } from "react";
-import videoFile from "../../assets/TIMELAPSE_SUNSET_1.mp4";
+import React, { useRef } from 'react';
+import videoFile from '../../assets/TIMELAPSE_SUNSET_1.mp4';
 
 function VideoBackground() {
   const videoRef = useRef(null);
@@ -23,13 +23,13 @@ function VideoBackground() {
     <video
       id="background-video"
       style={{
-        position: "fixed",
+        position: 'fixed',
         top: 0,
-        left:0, 
-        width: "100%",
-        height: "100%",
-        objectFit: "cover",
-        zIndex: -1
+        left: 0,
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover',
+        zIndex: -1,
       }}
       autoPlay
       loop

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -13,16 +13,19 @@ import {
   Box,
   TablePagination,
 } from '@mui/material';
-import { Edit, Delete, Add, Cable, Circle } from '@mui/icons-material';
+import { Delete, Add, Circle } from '@mui/icons-material';
 import FilterInput from '../components/filter';
 import { useFetchTrades } from '../api/queries';
 import SkeletonJobs from '../components/skeleton/JobsTable';
-import {convertTimestampToDate} from '../utils/dates'
+import { convertTimestampToDate } from '../utils/dates';
 import AddDialog from '../components/tradeDialogs/newTradeDialog';
 import DeleteDialog from '../components/tradeDialogs/DeleteDialog';
 
 const Trades = () => {
-  const { data: tradesData, isLoading :isTradesLoading, isError } = useFetchTrades()
+  const {
+    data: tradesData,
+    isLoading: isTradesLoading,
+  } = useFetchTrades();
   const [page, setPage] = useState(0);
   const [nameFilter, setNameFilter] = useState('');
   const [trade, setTrade] = useState({});
@@ -32,7 +35,7 @@ const Trades = () => {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (newPage) => {
     setPage(newPage);
   };
 
@@ -46,17 +49,21 @@ const Trades = () => {
   };
 
   const handleDelete = (entry) => {
-    setTrade(entry)
-    setIsDeleteDialogOpen(true)
+    setTrade(entry);
+    setIsDeleteDialogOpen(true);
   };
 
-  if (isTradesLoading)
-    return (<SkeletonJobs />)
+  if (isTradesLoading) return <SkeletonJobs />;
   return (
-    <TableContainer style={{ paddingLeft: "20px" }} component={Paper}>
+    <TableContainer style={{ paddingLeft: '20px' }} component={Paper}>
       <Box display="flex" justifyContent="flex-end" p={2}>
         <FilterInput onChange={handleNameFilter} />
-        <Button onClick={() => (setIsAddDialogOpen(true))} variant="contained" startIcon={<Add />} color="primary">
+        <Button
+          onClick={() => setIsAddDialogOpen(true)}
+          variant="contained"
+          startIcon={<Add />}
+          color="primary"
+        >
           New Order
         </Button>
       </Box>
@@ -75,25 +82,43 @@ const Trades = () => {
         <TableBody>
           {[...tradesData]
             .filter(function doFilter(item) {
-              if (nameFilter.length > 0)
-                return item.name.includes(nameFilter)
-              else
-                return item
+              if (nameFilter.length > 0) return item.name.includes(nameFilter);
+              else return item;
             })
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((entry, index) => (
               <TableRow key={index}>
                 <TableCell>{entry.symbol}</TableCell>
                 <TableCell>
-                  <Button color={entry.market === 'buy' ? 'success' : 'error'} variant='contained'>{entry.market.toUpperCase()}</Button>
-                  </TableCell>
+                  <Button
+                    color={entry.market === 'buy' ? 'success' : 'error'}
+                    variant="contained"
+                  >
+                    {entry.market.toUpperCase()}
+                  </Button>
+                </TableCell>
                 <TableCell>{entry.price}</TableCell>
                 <TableCell>{convertTimestampToDate(entry.date)}</TableCell>
-                <TableCell>{entry.channels.map(channel => { return (<Button key={channel.name} sx={{ marginLeft: "5px" }} color='secondary' variant='contained'>{channel.name}</Button>) })}</TableCell>
                 <TableCell>
-                  {entry.risk === 'low' && <Circle sx={{color:'green'}} />}
-                  {entry.risk === 'medium' && <Circle sx={{color:'orange'}} />}
-                  {entry.risk === 'high' && <Circle sx={{color:'red'}} />}
+                  {entry.channels.map((channel) => {
+                    return (
+                      <Button
+                        key={channel.name}
+                        sx={{ marginLeft: '5px' }}
+                        color="secondary"
+                        variant="contained"
+                      >
+                        {channel.name}
+                      </Button>
+                    );
+                  })}
+                </TableCell>
+                <TableCell>
+                  {entry.risk === 'low' && <Circle sx={{ color: 'green' }} />}
+                  {entry.risk === 'medium' && (
+                    <Circle sx={{ color: 'orange' }} />
+                  )}
+                  {entry.risk === 'high' && <Circle sx={{ color: 'red' }} />}
                 </TableCell>
                 <TableCell align="right">
                   <Tooltip title="Delete">
@@ -116,7 +141,11 @@ const Trades = () => {
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
       <AddDialog open={isAddDialogOpen} setOpen={setIsAddDialogOpen} />
-      <DeleteDialog open={isDeleteDialogOpen} setOpen={setIsDeleteDialogOpen} trade={trade}/>
+      <DeleteDialog
+        open={isDeleteDialogOpen}
+        setOpen={setIsDeleteDialogOpen}
+        trade={trade}
+      />
     </TableContainer>
   );
 };

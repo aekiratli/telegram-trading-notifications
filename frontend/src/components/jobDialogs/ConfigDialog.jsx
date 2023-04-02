@@ -1,23 +1,23 @@
 import * as React from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+} from '@mui/material';
 import { useJobContext } from './JobContext';
 
-
 export default function ConfigDialog({ open, setOpen }) {
-
-  const { job } = useJobContext()
+  const { job } = useJobContext();
 
   const handleClose = () => {
     setOpen(false);
   };
 
   return (
-    <Dialog
-      maxWidth="sm"
-      fullWidth={true}
-      open={open}
-      onClose={handleClose}
-    >
+    <Dialog maxWidth="sm" fullWidth={true} open={open} onClose={handleClose}>
       <DialogTitle>Config of {job?.name}</DialogTitle>
       <DialogContent>
         <TextField
@@ -32,7 +32,9 @@ export default function ConfigDialog({ open, setOpen }) {
         />
       </DialogContent>
       <DialogActions>
-        <Button variant='contained' onClick={handleClose}>Close</Button>
+        <Button variant="contained" onClick={handleClose}>
+          Close
+        </Button>
       </DialogActions>
     </Dialog>
   );

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -15,7 +15,12 @@ import {
 } from '@mui/material';
 import { Edit, Delete, Add, Cable } from '@mui/icons-material';
 import FilterInput from '../components/filter';
-import { useFetchJobs, useFetchJobTypes, useFetchSymbols, useFetchChannels } from '../api/queries';
+import {
+  useFetchJobs,
+  useFetchJobTypes,
+  useFetchSymbols,
+  useFetchChannels,
+} from '../api/queries';
 import SkeletonJobs from '../components/skeleton/JobsTable';
 import AddDialog from '../components/jobDialogs/AddDialog';
 import EditDialog from '../components/jobDialogs/EditDialog';
@@ -26,10 +31,11 @@ import ConfigDialog from '../components/jobDialogs/ConfigDialog';
 import { convertTimestampToDate } from '../utils/dates';
 
 const Job = () => {
-  const { data, isLoading, isError } = useFetchJobs()
-  const { data: jobData, isLoading: isJobDataLoading } = useFetchJobTypes()
-  const { data: channelData, isLoading: isChannelDataLoading } = useFetchChannels()
-  const { data: symbolData } = useFetchSymbols()
+  const { data, isLoading, isError } = useFetchJobs();
+  const { data: jobData } = useFetchJobTypes();
+  const { data: channelData, isLoading: isChannelDataLoading } =
+    useFetchChannels();
+  const { data: symbolData } = useFetchSymbols();
 
   const [page, setPage] = useState(0);
   const [nameFilter, setNameFilter] = useState('');
@@ -39,8 +45,8 @@ const Job = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isConfigDialogOpen, setIsConfigDialogOpen] = useState(false);
 
-  const [jobType, setJobType] = useState()
-  const [job, setJob] = useState()
+  const [jobType, setJobType] = useState();
+  const [job, setJob] = useState();
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [interval, setInterval] = useState('');
   const [message, setMessage] = useState('');
@@ -55,29 +61,31 @@ const Job = () => {
   const [value, setValue] = useState('');
 
   const handleDelete = (id) => {
-    const job_ = data.find(job => job.id === id)
-    setJob(job_)
-    setIsDeleteDialogOpen(true)
+    const job_ = data.find((job) => job.id === id);
+    setJob(job_);
+    setIsDeleteDialogOpen(true);
   };
 
   const handleEdit = (id) => {
-    const job_ = data.find(job => job.id === id)
-    setJob(job_)
-    setChannels(job_.channels)
-    setInterval(job_.config.candle_interval)
-    setValue(job_.config.rsi_value)
-    setResetCandles(job_.config.candles_to_reset)
-    const minutes = job_.config.since_when.split('m')[0]
-    const interval = INTERVALS.find(interval_ => interval_.value === job_.config.candle_interval).minutes
-    setCandles(minutes/interval)
-    setMessage(job_.config.msg)
-    setIsEditDialogOpen(true)
+    const job_ = data.find((job) => job.id === id);
+    setJob(job_);
+    setChannels(job_.channels);
+    setInterval(job_.config.candle_interval);
+    setValue(job_.config.rsi_value);
+    setResetCandles(job_.config.candles_to_reset);
+    const minutes = job_.config.since_when.split('m')[0];
+    const interval = INTERVALS.find(
+      (interval_) => interval_.value === job_.config.candle_interval
+    ).minutes;
+    setCandles(minutes / interval);
+    setMessage(job_.config.msg);
+    setIsEditDialogOpen(true);
   };
 
   const handleConfig = (id) => {
-    const job_ = data.find(job => job.id === id)
-    setJob(job_)
-    setIsConfigDialogOpen(true)
+    const job_ = data.find((job) => job.id === id);
+    setJob(job_);
+    setIsConfigDialogOpen(true);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -117,16 +125,25 @@ const Job = () => {
     channels,
     setMessage,
     message,
-  }
+  };
 
-  if (isLoading ||isError)
-    return (<SkeletonJobs />)
+  if (isLoading || isError) return <SkeletonJobs />;
   return (
     <JobContext.Provider value={values}>
-      <TableContainer style={{paddingLeft: "20px",paddingLeft: "20px"}} component={Paper}>
+      <TableContainer
+        style={{ paddingLeft: '20px' }}
+        component={Paper}
+      >
         <Box display="flex" justifyContent="flex-end" p={2}>
-          <FilterInput onChange={handleNameFilter}/>
-          <Button onClick={() => { setIsAddDialogOpen(true) }} variant="contained" startIcon={<Add />} color="primary">
+          <FilterInput onChange={handleNameFilter} />
+          <Button
+            onClick={() => {
+              setIsAddDialogOpen(true);
+            }}
+            variant="contained"
+            startIcon={<Add />}
+            color="primary"
+          >
             Add Job
           </Button>
         </Box>
@@ -146,19 +163,40 @@ const Job = () => {
             {[...data]
               .filter(function doFilter(item) {
                 if (nameFilter.length > 0)
-                  return item.name.includes(nameFilter)
-                else
-                  return item
+                  return item.name.includes(nameFilter);
+                else return item;
               })
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((entry, index) => (
                 <TableRow key={index}>
                   <TableCell>{entry.name}</TableCell>
                   <TableCell>{entry.config?.pair}</TableCell>
-                  <TableCell>{INTERVALS.find(interval_ => interval_.value === entry.config?.candle_interval)?.label}</TableCell>
+                  <TableCell>
+                    {
+                      INTERVALS.find(
+                        (interval_) =>
+                          interval_.value === entry.config?.candle_interval
+                      )?.label
+                    }
+                  </TableCell>
                   <TableCell>{entry.type.toUpperCase()}</TableCell>
-                  <TableCell>{convertTimestampToDate(entry.config.last_run)}</TableCell>
-                  <TableCell>{entry.channels.map(channel => {return (<Button key={channel.name} sx={{marginLeft:"5px"}} color='secondary' variant='contained'>{channel.name}</Button>)})}</TableCell>
+                  <TableCell>
+                    {convertTimestampToDate(entry.config.last_run)}
+                  </TableCell>
+                  <TableCell>
+                    {entry.channels.map((channel) => {
+                      return (
+                        <Button
+                          key={channel.name}
+                          sx={{ marginLeft: '5px' }}
+                          color="secondary"
+                          variant="contained"
+                        >
+                          {channel.name}
+                        </Button>
+                      );
+                    })}
+                  </TableCell>
 
                   <TableCell align="right">
                     <Tooltip title="Show Config">
@@ -191,9 +229,15 @@ const Job = () => {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
         <AddDialog open={isAddDialogOpen} setOpen={setIsAddDialogOpen} />
-        <DeleteDialog open={isDeleteDialogOpen} setOpen={setIsDeleteDialogOpen} />
+        <DeleteDialog
+          open={isDeleteDialogOpen}
+          setOpen={setIsDeleteDialogOpen}
+        />
         <EditDialog open={isEditDialogOpen} setOpen={setIsEditDialogOpen} />
-        <ConfigDialog open={isConfigDialogOpen} setOpen={setIsConfigDialogOpen} />
+        <ConfigDialog
+          open={isConfigDialogOpen}
+          setOpen={setIsConfigDialogOpen}
+        />
       </TableContainer>
     </JobContext.Provider>
   );

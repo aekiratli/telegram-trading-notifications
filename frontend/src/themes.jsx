@@ -1,11 +1,10 @@
 import { createTheme } from '@mui/material/styles';
 
-
 export const DARK_THEME = createTheme({
   typography: {
-    "fontFamily": `"Quicksand"`,
-    "fontSize": 14,
-    "fontWeight": "bold",
+    fontFamily: `"Quicksand"`,
+    fontSize: 14,
+    fontWeight: 'bold',
   },
   palette: {
     mode: 'dark',
@@ -35,13 +34,13 @@ export const DARK_THEME = createTheme({
 export const LIGHT_THEME = createTheme({
   palette: {
     primary: {
-      main: "#52796f",
+      main: '#52796f',
     },
     secondary: {
-      main: "#b36844",
+      main: '#b36844',
     },
     background: {
-      default: "#f0f0f0",
+      default: '#f0f0f0',
     },
     select: {
       background: '#f0f0f0',
@@ -51,8 +50,8 @@ export const LIGHT_THEME = createTheme({
     },
   },
   typography: {
-    fontFamily: "Quicksand",
+    fontFamily: 'Quicksand',
     fontSize: 14,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
 });

@@ -1,7 +1,6 @@
 import React from 'react';
 import { styled } from '@mui/material/styles';
-import { Button, Grid, InputBase, Paper } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
+import { Button, Grid } from '@mui/material';
 import { useFetchJobs } from '../api/queries';
 import SkeletonLogs from '../components/skeleton/LogsGrid';
 import LogDialog from '../components/logDialogs';
@@ -10,7 +9,6 @@ import FilterInput from '../components/filter';
 const Root = styled('div')({
   padding: '16px',
 });
-
 
 const JobButton = styled(Button)({
   textTransform: 'none',
@@ -42,19 +40,17 @@ const FilterWrapper = styled('div')({
 // });
 
 const Logs = () => {
-
   const [isLogDialogOpen, setIsLogDialogOpen] = React.useState(false);
 
   const [job, setJob] = React.useState({});
-  
-  const handleClick = (job) => {
-    setJob(job)
-    setIsLogDialogOpen(true)
-  }
-  const { data: jobsData, isLoading: isJobsLoading } = useFetchJobs()
 
-  if (isJobsLoading)
-    return (<SkeletonLogs />)
+  const handleClick = (job) => {
+    setJob(job);
+    setIsLogDialogOpen(true);
+  };
+  const { data: jobsData, isLoading: isJobsLoading } = useFetchJobs();
+
+  if (isJobsLoading) return <SkeletonLogs />;
 
   return (
     <Root>
@@ -70,7 +66,11 @@ const Logs = () => {
           </Grid>
         ))}
       </Grid>
-      <LogDialog open={isLogDialogOpen} setOpen={setIsLogDialogOpen} job={job}/>
+      <LogDialog
+        open={isLogDialogOpen}
+        setOpen={setIsLogDialogOpen}
+        job={job}
+      />
     </Root>
   );
 };

@@ -1,10 +1,12 @@
 import * as React from 'react';
-import { InputLabel, MenuItem, Select, FormControl, TextField, Autocomplete } from '@mui/material';
-import { INTERVALS } from '../../utils/binance';
+import {
+  FormControl,
+  TextField,
+  Autocomplete,
+} from '@mui/material';
 import { useJobContext } from './JobContext';
 
 export default function RSIEditContent() {
-
   const {
     value,
     setValue,
@@ -17,32 +19,27 @@ export default function RSIEditContent() {
     candles,
     message,
     setMessage,
-  } = useJobContext()
-
+  } = useJobContext();
 
   const handleValue = (e) => {
-    if (/^\d*$/.test(e.target.value))
-      setValue(e.target.value)
+    if (/^\d*$/.test(e.target.value)) setValue(e.target.value);
   };
 
   const handleMessage = (e) => {
-    setMessage(e.target.value)
+    setMessage(e.target.value);
   };
 
   const handleChannels = (e, value) => {
-    setChannels(value)
+    setChannels(value);
   };
 
   const handleResetCandles = (e) => {
-    if (/^\d*$/.test(e.target.value))
-      setResetCandles(e.target.value)
+    if (/^\d*$/.test(e.target.value)) setResetCandles(e.target.value);
   };
 
   const handleCandles = (e) => {
-    if (/^\d*$/.test(e.target.value))
-      setCandles(e.target.value)
+    if (/^\d*$/.test(e.target.value)) setCandles(e.target.value);
   };
-
 
   return (
     <>
@@ -57,7 +54,7 @@ export default function RSIEditContent() {
         type="text"
         fullWidth
       />
-            <TextField
+      <TextField
         required
         value={candles}
         onChange={handleCandles}
@@ -89,11 +86,7 @@ export default function RSIEditContent() {
           value={channels}
           getOptionLabel={(option) => option.name}
           renderInput={(params) => (
-            <TextField
-              {...params}
-              variant="outlined"
-              label="Channels"
-            />
+            <TextField {...params} variant="outlined" label="Channels" />
           )}
         />
       </FormControl>
@@ -108,5 +101,5 @@ export default function RSIEditContent() {
         fullWidth
       />
     </>
-  )
+  );
 }

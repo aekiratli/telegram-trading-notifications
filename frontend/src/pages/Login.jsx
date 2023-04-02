@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Box,
-  Button,
-  Container,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Container, TextField, Typography } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { styled } from '@mui/system';
 import { API_URL } from '../api/urls';
@@ -24,18 +18,18 @@ const Login = () => {
 
   const handleLogin = () => {
     apiFetch(API_URL.login(), { username: username, password: password })
-      .then(response => {
+      .then((response) => {
         if (response.token) {
-          setIsAuthenticated(true)
+          setIsAuthenticated(true);
           localStorage.setItem('token', response.token);
-          window.location.href = "/jobs";
+          window.location.href = '/jobs';
         }
         if (response.message) {
-          setSnackbar({ open: true, message: response.message, type: 'error' })
+          setSnackbar({ open: true, message: response.message, type: 'error' });
         }
       })
-      .catch(error => {
-        setSnackbar({ open: true, message: error.message, type: 'error' })
+      .catch((error) => {
+        setSnackbar({ open: true, message: error.message, type: 'error' });
       });
   };
 
@@ -43,9 +37,19 @@ const Login = () => {
     <div style={{}}>
       <VideoBackground />
       <Container maxWidth="xs">
-        <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <LockOutlinedIcon style={{fill:"white"}} sx={{ mb: 1,fontSize: '3rem' }} />
-          <Typography style={{color:"white"}} component="h1" variant="h5">
+        <Box
+          sx={{
+            marginTop: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <LockOutlinedIcon
+            style={{ fill: 'white' }}
+            sx={{ mb: 1, fontSize: '3rem' }}
+          />
+          <Typography style={{ color: 'white' }} component="h1" variant="h5">
             Trading Notifications
           </Typography>
           <Box component="form" noValidate sx={{ mt: 1 }}>
@@ -71,7 +75,12 @@ const Login = () => {
               autoComplete="current-password"
               onChange={(e) => setPassword(e.target.value)}
             />
-            <MyButton onClick={handleLogin} fullWidth variant="contained" disabled={username.length === 0 || password.length === 0}>
+            <MyButton
+              onClick={handleLogin}
+              fullWidth
+              variant="contained"
+              disabled={username.length === 0 || password.length === 0}
+            >
               Login
             </MyButton>
           </Box>

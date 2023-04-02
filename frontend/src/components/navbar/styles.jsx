@@ -4,26 +4,28 @@ import { Link } from 'react-router-dom';
 
 export const drawerWidth = 240;
 
-export const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' && prop !== 'isLoggedIn'  })(
-  ({ theme, open, isLoggedIn }) => ({
-    flexGrow: 1,
-    marginTop: "40px",
-    padding: theme.spacing(0),
-    paddingLeft: "40px",
-    paddingRight: "40px",
+export const Main = styled('main', {
+  shouldForwardProp: (prop) => prop !== 'open' && prop !== 'isLoggedIn',
+})(({ theme, open, isLoggedIn }) => ({
+  flexGrow: 1,
+  marginTop: '40px',
+  padding: theme.spacing(0),
+  paddingLeft: '40px',
+  paddingRight: '40px',
+  transition: theme.transitions.create('margin', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  marginLeft: 0,
+  ...(open && {
     transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
     }),
-    marginLeft: 0,
-    ...(open && {
-      transition: theme.transitions.create('margin', {
-        easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-      marginLeft: `${drawerWidth}px`,
-    }),
-    ...((open && !isLoggedIn) && {
+    marginLeft: `${drawerWidth}px`,
+  }),
+  ...(open &&
+    !isLoggedIn && {
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
@@ -33,8 +35,7 @@ export const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open
       paddingRight: 0,
       marginTop: 0,
     }),
-  }),
-);
+}));
 
 export const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
