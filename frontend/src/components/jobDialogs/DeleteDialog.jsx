@@ -9,46 +9,47 @@ import { API_URL } from '../../api/urls';
 import { useQueryClient } from 'react-query';
 import { useAppContext } from '../../AppContext';
 
-export default function DeleteDialog({open, setOpen}) {
-
-  const [isLoading, setIsLoading] = React.useState(false)
-  const {job} = useJobContext()
-  const queryClient = useQueryClient()
-  const { setSnackbar } = useAppContext()
+export default function DeleteDialog({ open, setOpen }) {
+  const [isLoading, setIsLoading] = React.useState(false);
+  const { job } = useJobContext();
+  const queryClient = useQueryClient();
+  const { setSnackbar } = useAppContext();
 
   const handleClose = () => {
     setOpen(false);
   };
 
-  
   const handleDelete = () => {
-    setIsLoading(true)
+    setIsLoading(true);
     apiFetch(API_URL.deleteJob(job.id))
-    .then(response => {
-      setOpen(false)
-      queryClient.invalidateQueries({ queryKey: ['list_jobs'] })
-      setSnackbar({ open: true, message: "Deleted", type: 'success' })
-    })
-    .catch(error => {
-      setSnackbar({ open: true, message: "Something went wrong", type: 'error' })
-    })
-    .finally(error => {
-      setIsLoading(false)
-    });
+      .then((response) => {
+        setOpen(false);
+        queryClient.invalidateQueries({ queryKey: ['list_jobs'] });
+        setSnackbar({ open: true, message: 'Deleted', type: 'success' });
+      })
+      .catch((error) => {
+        setSnackbar({
+          open: true,
+          message: 'Something went wrong',
+          type: 'error',
+        });
+      })
+      .finally((error) => {
+        setIsLoading(false);
+      });
   };
 
   return (
-      <Dialog
-        maxWidth="sm"
-        fullWidth
-        open={open}
-        onClose={handleClose}
-      >
-        <DialogTitle>Deleting {job?.name}</DialogTitle>
-        <DialogActions>
-          <Button variant='contained' disabled={isLoading} onClick={handleDelete}>Delete</Button>
-          <Button variant='contained' onClick={handleClose}>Close</Button>
-        </DialogActions>
-      </Dialog>
+    <Dialog maxWidth="sm" fullWidth open={open} onClose={handleClose}>
+      <DialogTitle>Deleting {job?.name}</DialogTitle>
+      <DialogActions>
+        <Button variant="contained" disabled={isLoading} onClick={handleDelete}>
+          Delete
+        </Button>
+        <Button variant="contained" onClick={handleClose}>
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }

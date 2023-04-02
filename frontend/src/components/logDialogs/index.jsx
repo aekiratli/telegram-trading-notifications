@@ -1,13 +1,20 @@
 import * as React from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, DialogContentText } from '@mui/material';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+} from '@mui/material';
 
 export default function LogDialog({ open, setOpen, job }) {
   const socketRef = React.useRef(null);
-  const [logs, setLogs] = React.useState([])
+  const [logs, setLogs] = React.useState([]);
 
   const handleClose = () => {
     setOpen(false);
-    setLogs([])
+    setLogs([]);
   };
 
   React.useEffect(() => {
@@ -50,7 +57,7 @@ export default function LogDialog({ open, setOpen, job }) {
     return () => {
       if (socketRef.current) {
         socketRef.current.close();
-        setLogs([])
+        setLogs([]);
       }
     };
   }, [open, job?.name]);
@@ -58,21 +65,26 @@ export default function LogDialog({ open, setOpen, job }) {
   return (
     <Dialog maxWidth="lg" fullWidth={true} open={open} onClose={handleClose}>
       <DialogTitle id="alert-dialog-title">
-        {"Logs of " + job?.name}
+        {'Logs of ' + job?.name}
       </DialogTitle>
       <DialogContent style={{ backgroundColor: 'black' }}>
         <>
-          <DialogContentText style={{ color: 'white' }} id="alert-dialog-description">
+          <DialogContentText
+            style={{ color: 'white' }}
+            id="alert-dialog-description"
+          >
             {logs.map((line, index) => (
-              <div key={index}>{line.split("\n").map((i, key) => {
-                return <div key={key}>{i}</div>;
-              })}</div>
+              <div key={index}>
+                {line.split('\n').map((i, key) => {
+                  return <div key={key}>{i}</div>;
+                })}
+              </div>
             ))}
           </DialogContentText>
         </>
       </DialogContent>
       <DialogActions>
-        <Button variant='contained' color="error" onClick={handleClose}>
+        <Button variant="contained" color="error" onClick={handleClose}>
           Close
         </Button>
       </DialogActions>

@@ -1,13 +1,13 @@
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Box,
-    Skeleton,
-  } from '@mui/material';
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Box,
+  Skeleton,
+} from '@mui/material';
 
 function SkeletonJobs() {
   return (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Protected from './ProtectedRoute';
 import Login from './pages/Login';
 import Jobs from './pages/Jobs';
@@ -12,16 +12,12 @@ import NavBar from './components/navbar/NavBar';
 import { Main } from './components/navbar/styles';
 import { ThemeProvider } from '@mui/material/styles';
 import { useAppContext } from './AppContext';
-import {
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query'
+import { QueryClient, QueryClientProvider } from 'react-query';
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 const App = () => {
-
-  const { isSidebarOpen, selectedTheme, isLoggedIn } = useAppContext()
+  const { isSidebarOpen, selectedTheme, isLoggedIn } = useAppContext();
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -43,7 +39,7 @@ const App = () => {
               <Route
                 path="/logs"
                 element={
-                  <Protected >
+                  <Protected>
                     <Logs />
                   </Protected>
                 }
@@ -51,7 +47,7 @@ const App = () => {
               <Route
                 path="/trades"
                 element={
-                  <Protected >
+                  <Protected>
                     <TradesPage />
                   </Protected>
                 }
@@ -64,10 +60,7 @@ const App = () => {
                   </Protected>
                 }
               />
-              <Route
-                path="/"
-                element={<Navigate to="/jobs" />}
-              />
+              <Route path="/" element={<Navigate to="/jobs" />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Main>

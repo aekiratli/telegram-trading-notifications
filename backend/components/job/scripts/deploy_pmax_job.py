@@ -22,9 +22,10 @@ id = args.id
 path = args.path_to_append
 sys.path.append(path)
 
-from config import job_logger
+from config import *
 from components.api.telegram_api import TelegramApiController
 from components.indicators.rsi import calculate_rsi
+from components.indicators.pmax import calculate_pmax
 from components.api.binance_fetcher import BinanceApiController
 from components.utils.binance_utils import KlineInterval, KlineIntervalSeconds, check_interval, get_next_run
 from components.job.models import Job
@@ -49,39 +50,42 @@ async def main():
     is_time_yet = check_interval(now, seconds)
 
     if is_time_yet:
-        # logging.info(f"Running {job.name} ... ")
-
+        job.config["last_run"] = now
         # Add some attrs first time
         if config.last_run == 0:
-            job.config["is_below_threshold"] = False
+            job.config["is_already_alerted"] = False
 
         job.config["last_run"] = now
 
-        if (config.how_many_candles_left_to_reset == 0):
-            # Fetch data
-            df = BinanceApiController(job.name).get_klines(pair=config.pair,
-                                                           candle_interval=getattr(
-                                                               KlineInterval, config.candle_interval).value,
-                                                           since_when=config.since_when,
-                                                           )
-            # Get RSI
-            df = calculate_rsi(df)
-            # Do calculations
-            logging.info(f"RSI value -> {df.iloc[-1]['rsi']}")
-            if df.iloc[-1]['rsi'] <= config.rsi_value:
-                if job.config["is_below_threshold"] == False:
+        # Fetch data
+        df = BinanceApiController(job.name).get_klines(pair=config.pair,
+                                                        candle_interval=getattr(
+                                                            KlineInterval, config.candle_interval).value,
+                                                        since_when=config.since_when,
+                                                        )
+        # Get PMAX
+        pmax, sma = calculate_pmax(df["close"], df["high"], df["low"])
+        df['pmax'] =  pmax
+        df['sma'] =  sma
+        # Do calculations
+        if df.iloc[-1]['pmax'] <=  df.iloc[-1]['sma']:
+            is_buy_zone = True
+            job.config["is_already_alerted"] = True 
+            logging.info(f"PMAX value -> {df.iloc[-1]['pmax']}, SMA value -> { df.iloc[-1]['sma']} , Low Value -> { df.iloc[-1]['low']} , Zone -> BUY")
+        else:
+            is_buy_zone = False
+            job.config["is_already_alerted"] = False 
+            logging.info(f"PMAX value -> {df.iloc[-1]['pmax']}, SMA value -> { df.iloc[-1]['sma']} , Low Value -> { df.iloc[-1]['low']} , Zone -> SELL")
+
+        if is_buy_zone:
+             if df.iloc[-1]['low']  <= df.iloc[-1]['pmax']:
+                if job.config["is_already_alerted"] == False:
                     # Send notifications
                     logging.info(f"Sending Notifications for {job.name} ... ")
                     await TelegramApiController(chat_ids, job.name).send_message(config.msg)
-                    job.config["how_many_candles_left_to_reset"] = config.candles_to_reset
                 else:
-                    logging.info(
-                        f"Value did not went above threshold since last alert ... ")
-                job.config["is_below_threshold"] = True
-            else:
-                job.config["is_below_threshold"] = False
-        else:
-            job.config["how_many_candles_left_to_reset"] = config.how_many_candles_left_to_reset - 1
+                    logging.info(f"Alert condition was met during previus BUY candles")
+
         await job.save()
     else:
         next_run = get_next_run(now, seconds).strftime("%d %B %Y %H:%M:%S")
