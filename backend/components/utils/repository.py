@@ -38,6 +38,11 @@ class UtilsController:
         symbols = await Symbol.filter().all()
         symbols = jobs_to_dict_of_array(symbols)
         return symbols
+    
+    @classmethod
+    async def get_symbol_by_id(self,symbol_id) -> Symbol:
+        symbol= await Symbol.get(id=symbol_id)
+        return symbol
 
 def jobs_to_dict_of_array(jobs: List[Symbol]) -> List[dict]:
     return [{'id': t.id, 'name': t.name} for t in jobs]

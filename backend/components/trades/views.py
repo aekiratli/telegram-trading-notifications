@@ -2,16 +2,24 @@ from sanic import Blueprint, Request, HTTPResponse
 from sanic.response import json
 from components.trades.repository import TradeController
 from components.trades.signals import trade_created_handler, trade_deleted_handler
+import copy
+from components.utils.repository import UtilsController
 
 async def get_trades(request: Request) -> HTTPResponse:
     jobs = await TradeController.get_trades()
     return json(jobs)
 
 async def add_trade(request: Request) -> HTTPResponse:
+    org_payload = copy.deepcopy(request.json)
     trade = await TradeController.create_trade(request.json)
+    chat_ids = await TradeController.get_channels_by_trade_id(trade.id)
+    symbol = await UtilsController.get_symbol_by_id(org_payload["symbol_id"])
     await request.app.dispatch(
         "trade.entry.created",
-        context={"instance": trade})
+        context={"instance": trade,
+                 "symbol": symbol,
+                 "request_payload": org_payload,
+                  "chat_ids": chat_ids})
     
     return json({"msg": "success"})
 
