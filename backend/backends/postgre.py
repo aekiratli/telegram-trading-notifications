@@ -1,4 +1,5 @@
 from tortoise.contrib.sanic import register_tortoise
+from config import DB_URI
 
 APPS_MODELS = [
     "components.user.models",
@@ -9,9 +10,11 @@ APPS_MODELS = [
     "aerich.models",
 ]
 
-URI = "postgres://postgres:1@192.168.1.82:5432/postgres"
+#URI = "postgres://postgres:1@192.168.1.82:5432/postgres"
+#URI = "postgres://postgres:postgres@localhost:5432/postgres"
+
 TORTOISE_ORM = {
-    "connections": {"default": URI},
+    "connections": {"default": DB_URI},
     "apps": {
         "models": {
             "models": APPS_MODELS,

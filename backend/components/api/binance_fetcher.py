@@ -6,7 +6,7 @@ import traceback
 
 class BinanceApiController:
     def __init__(self, job_name=''):
-        self.client = Client('', '')
+        self.client = Client(BINANCE_KEY,BINANCE_SECRET)
         self.job_name =  job_name
 
     def get_klines(self, pair: str, candle_interval: str, since_when: str, ma=int) -> pd.DataFrame:
@@ -33,3 +33,8 @@ class BinanceApiController:
         coins = self.client.get_all_tickers()
         return coins
 
+    async def get_orders(self) ->  List[Dict[str, str]]:
+        orders = self.client.get_open_orders()
+
+        for order in orders:
+            print(order)

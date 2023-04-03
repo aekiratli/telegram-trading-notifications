@@ -18,7 +18,15 @@ class TradeController:
         if trade:
             await trade.delete()
             return trade
-
+        
+    @classmethod
+    async def get_channels_by_trade_id(cls, trade_id: int) -> List[int]:
+        trade = await Trade.get(id=trade_id).prefetch_related('channels')
+        chat_ids = []
+        for channel in  trade.channels:
+            chat_ids.append(channel.chat_id)
+        return chat_ids
+    
     @classmethod
     async def get_risk_by_name(self, risk_name) -> Risk:
        return await Risk.get(name=risk_name)
@@ -26,7 +34,6 @@ class TradeController:
     @classmethod
     async def get_market_by_name(self, market_name) -> Risk:
        return await Market.get(name=market_name)
-    
     @classmethod
     @atomic()
     async def create_trade(self, payload: dict) -> Trade:

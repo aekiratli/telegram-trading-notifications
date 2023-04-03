@@ -6,6 +6,10 @@ import sys
 load_dotenv()
 SECRET_KEY = 'super_secret_key'
 TELEGRAM_SECRET = os.getenv("TELEGRAM_SECRET")
+BINANCE_SECRET =  os.getenv("BINANCE_SECRET")
+BINANCE_KEY =  os.getenv("BINANCE_KEY")
+DB_URI = os.getenv("DB_URI")
+CONFIG = os.getenv("CONFIG")
 
 logger_db_client = logging.getLogger("tortoise.db_client")
 logger_db_client.setLevel(logging.ERROR)

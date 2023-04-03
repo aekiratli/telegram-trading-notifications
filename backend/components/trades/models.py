@@ -7,6 +7,8 @@ if TYPE_CHECKING:
 
 class Trade(Model):
     id = fields.IntField(pk=True)
+    #binance_trade_id = fields.IntField(null=True)
+    telegram_msg_info = fields.JSONField(null=True)
     price = fields.DecimalField(max_digits=15, decimal_places=6)
     date = fields.DatetimeField(auto_now_add=True)
     market: fields.ForeignKeyRelation["Market"] = fields.ForeignKeyField("models.Market", related_name="market")
