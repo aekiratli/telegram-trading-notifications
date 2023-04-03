@@ -11,7 +11,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 now = int(datetime.now().timestamp())
 # URI = "mysql://root:test_root_password@localhost:3306/telegram"
-URI = "postgres://postgres:1@192.168.1.82:5432/postgres"
+# URI = "postgres://postgres:1@192.168.1.82:5432/postgres"
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--id', type=str, help='ID of the Job')
@@ -22,7 +22,7 @@ id = args.id
 path = args.path_to_append
 sys.path.append(path)
 
-from config import job_logger
+from config import job_logger, DB_URI
 from components.api.telegram_api import TelegramApiController
 from components.indicators.rsi import calculate_rsi
 from components.api.binance_fetcher import BinanceApiController
@@ -31,7 +31,7 @@ from components.job.models import Job
 async def main():
     # Connect to the database
     await Tortoise.init(
-        db_url=URI,
+        db_url=DB_URI,
         modules={'models': ['components.job.models']}
     )
 
@@ -93,7 +93,7 @@ async def main():
 # Run the script
 if __name__ == '__main__':
     try:
-        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        #asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
         asyncio.run(main())
     except:
         logging.error(

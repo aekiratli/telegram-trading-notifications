@@ -11,7 +11,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 now = int(datetime.now().timestamp())
 # URI = "mysql://root:test_root_password@localhost:3306/telegram"
-URI = "postgres://postgres:1@192.168.1.82:5432/postgres"
+# URI = "postgres://postgres:1@192.168.1.82:5432/postgres"
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--id', type=str, help='ID of the Job')
@@ -32,7 +32,7 @@ from components.job.models import Job
 async def main():
     # Connect to the database
     await Tortoise.init(
-        db_url=URI,
+        db_url=DB_URI,
         modules={'models': ['components.job.models']}
     )
 

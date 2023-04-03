@@ -2,3 +2,9 @@ aerich
 tortoise-orm
 sanic
 python-dotenv
+PyJWT
+Werkzeug
+pandas
+numpy
+python-binance
+asyncpg
