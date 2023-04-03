@@ -18,4 +18,4 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
           source: "./*"
-          target: "/"
+          target: "/root/app"
