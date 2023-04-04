@@ -21,8 +21,8 @@ async def deploy_jobs():
         # Run jobs
         for job in jobs:
             if job.job_type.name == 'rsi':
-                command = ['python', f'{SCRIPTS_PATH}deploy_rsi_job.py', f'--id={job.id}', f'--path_to_append={FULL_PATH}']
+                command = ['python3', f'{SCRIPTS_PATH}deploy_rsi_job.py', f'--id={job.id}', f'--path_to_append={FULL_PATH}']
             if job.job_type.name == 'pmax':
-                command = ['python', f'{SCRIPTS_PATH}deploy_pmax_job.py', f'--id={job.id}', f'--path_to_append={FULL_PATH}']
+                command = ['python3', f'{SCRIPTS_PATH}deploy_pmax_job.py', f'--id={job.id}', f'--path_to_append={FULL_PATH}']
             subprocess.Popen(command)
         await asyncio.sleep(60)
