@@ -19,7 +19,7 @@ export default function LogDialog({ open, setOpen, job }) {
 
   React.useEffect(() => {
     if (open) {
-      const socketUrl = `ws://localhost:5007/api/v1/ws/logs/${job?.name}`;
+      const socketUrl = `${process.env.REACT_APP_WS_URL}/ws/logs/${job?.name}`;
       const socket = new WebSocket(socketUrl);
 
       socketRef.current = socket;
